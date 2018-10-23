@@ -56,9 +56,9 @@ if __name__ == "__main__":
 	parser_sra = subpa.add_parser('sra', help="download from SRA")
 	parser_sra.add_argument('id', type=str, help="BioProject or [E/S]RP number")
 	parser_sra.add_argument('-o',dest="outdir", type=str, default="",
-				help="directory in which to save output")
+				help="directory in which to save output. created if it doesn't exist")
 	parser_sra.add_argument('-m', dest="metadata", action="store_true",
-				help="save SRA metadata (flag)")
+				help="save SRA metadata")
 	parser_sra.add_argument('-t',dest="threads", type=int, default=1,
 				help="threads to use (for fasterq-dump only)")
 	parser_sra.add_argument('-r',dest="retries", type=int, default=0,
