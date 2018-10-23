@@ -1,0 +1,2 @@
+sra-tools>2.9
+python3

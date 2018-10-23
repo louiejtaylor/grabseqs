@@ -1,0 +1,86 @@
+#!/usr/bin/python3
+
+import requests, argparse, sys, os
+from subprocess import call
+
+# Test with SRP159164 (single) or ERP020555 (single and paired)
+
+def get_sra_acc_metadata(pacc, save = False, loc = ''):
+	"""
+	Function to get list of SRA accession numbers from a particular project.
+	Takes project accession number `pacc` and returns a list of SRA 
+	accession numbers. Optional arguments to `save` metadata .csv in a specified
+	`loc`ation.
+	Originally featured in: https://github.com/louiejtaylor/hisss
+	"""
+	metadata = requests.get("http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&db=sra&rettype=runinfo&term="+pacc)
+	if save:
+		f = open(os.path.join(loc,pacc+".tsv"), 'w')
+		f.write(metadata.text)
+		f.close()
+	lines = [l.split(',') for l in metadata.text.split("\n")]
+	run_col = lines[0].index("Run")
+	run_list = [l[run_col] for l in lines[1:] if len(l[run_col]) > 0]
+
+	return run_list
+
+def run_fasterq_dump(acc, retries = 0, threads = 1, loc=''):
+	"""
+	Helper function to run fasterq-dump to grab a particular `acc`ession,
+	with support for a particular number of `retries`. Can use multiple
+	`threads`.
+	"""
+	retcode = 1
+	while retries >= 0:
+		cmd = ["fasterq-dump", "-e", str(threads)]
+		if loc != "":
+			cmd = cmd + ['-O', loc]	
+		cmd = cmd + [acc]
+		print("downloading " + acc + " using fasterq-dump")
+		retcode = call(cmd)
+		if retcode == 0:
+			break
+		else:
+			retries -= 1
+	return retcode
+
+if __name__ == "__main__":
+	
+	# Top-level parser
+	parser = argparse.ArgumentParser(prog="grabseqs",
+		 description='Download metagenomic sequences from public datasets.')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.1')
+	subpa = parser.add_subparsers(help='repository(ies) available')
+
+	# Parser for SRA data
+	parser_sra = subpa.add_parser('sra', help="download from SRA")
+	parser_sra.add_argument('id', type=str, help="BioProject or [E/S]RP number")
+	parser_sra.add_argument('-o',dest="outdir", type=str, default="",
+				help="directory in which to save output")
+	parser_sra.add_argument('-m', dest="metadata", action="store_true",
+				help="save SRA metadata (flag)")
+	parser_sra.add_argument('-t',dest="threads", type=int, default=1,
+				help="threads to use (for fasterq-dump only)")
+	parser_sra.add_argument('-r',dest="retries", type=int, default=0,
+				help="number of times to retry download")
+
+	# Parser for other repos? (i.e. MG-RAST)
+
+	args = parser.parse_args()
+
+	#z = call(["fasterq-dump","-h"])
+	
+	# Make output directories if they don't exist
+	if args.outdir != "":
+		if not os.path.exists(args.outdir):
+			os.makedirs(args.outdir)
+
+	acclist = get_sra_acc_metadata(args.id, args.metadata, args.outdir)
+
+	for acc in acclist:
+		run_fasterq_dump(acc, args.retries, args.threads, args.outdir)
+#		break
+#	print(args)#.id)
+	#print(z)
+
+
