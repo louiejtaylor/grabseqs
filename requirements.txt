@@ -1,2 +1,4 @@
 sra-tools>2.9
-python3
+python>3
+requests
+argparse

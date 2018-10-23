@@ -55,7 +55,7 @@ if __name__ == "__main__":
 	# Parser for SRA data
 	parser_sra = subpa.add_parser('sra', help="download from SRA")
 	parser_sra.add_argument('id', type=str, help="BioProject or [E/S]RP number")
-	parser_sra.add_argument('-o',dest="outdir", type=str, default="",
+	parser_sra.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_sra.add_argument('-m', dest="metadata", action="store_true",
 				help="save SRA metadata")
@@ -69,9 +69,13 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	# Make output directories if they don't exist
-	if args.outdir != "":
-		if not os.path.exists(args.outdir):
-			os.makedirs(args.outdir)
+	try:
+		if args.outdir != "":
+			if not os.path.exists(args.outdir):
+				os.makedirs(args.outdir)
+	except AttributeError: # No args were provided
+		print("No arguments found, run `grabseqs -h` or  `grabseqs sra -h` for help")
+		sys.exit(0)
 
 	acclist = get_sra_acc_metadata(args.id, args.metadata, args.outdir)
 
