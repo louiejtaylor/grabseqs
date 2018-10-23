@@ -45,7 +45,7 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc=''):
 	return retcode
 
 if __name__ == "__main__":
-	
+
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
@@ -68,8 +68,6 @@ if __name__ == "__main__":
 
 	args = parser.parse_args()
 
-	#z = call(["fasterq-dump","-h"])
-	
 	# Make output directories if they don't exist
 	if args.outdir != "":
 		if not os.path.exists(args.outdir):
@@ -79,8 +77,5 @@ if __name__ == "__main__":
 
 	for acc in acclist:
 		run_fasterq_dump(acc, args.retries, args.threads, args.outdir)
-#		break
-#	print(args)#.id)
-	#print(z)
 
 
