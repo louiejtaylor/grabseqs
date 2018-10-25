@@ -30,6 +30,7 @@ Usage:
   
    - Python 3 (argparse, requests, subprocess)
    - sra-tools
+   - pigz
 
 Pass the `requirements.txt` from this repository to Conda to painlessly install all dependencies:
     
