@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 import requests, argparse, sys, os
 from subprocess import call
@@ -39,6 +39,7 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc=''):
 		print("downloading " + acc + " using fasterq-dump")
 		retcode = call(cmd)
 		if retcode == 0:
+			rgzip = call(["pigz -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
 			break
 		else:
 			retries -= 1
