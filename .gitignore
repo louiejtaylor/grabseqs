@@ -1,10 +1,12 @@
-# sequence
+# sequence and cluster
 *.fastq
 *.fastq.gz
 *.fq
 *.fq.gz
 *.fasta
 *.fa
+*.out
+*.err
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
