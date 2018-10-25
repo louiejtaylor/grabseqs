@@ -1,0 +1,25 @@
+{% set version = "0.1" %}
+
+package:
+  name: grabseqs
+  version: '{{ version }}'
+
+requirements:
+  run:
+    - sra-tools>2.9
+    - python>3
+    - requests
+    - argparse
+    - pigz
+
+test:
+  commands:
+    - grabseqs -v
+
+about:
+  home: https://github.com/louiejtaylor/grabseqs
+  license: MIT
+  license_family: MIT
+  summary: grabseqs simplifies downloading reads in bulk from SRA projects
+  dev_url: https://github.com/louiejtaylor/grabseqs
+
