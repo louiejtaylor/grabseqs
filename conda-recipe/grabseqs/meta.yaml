@@ -4,6 +4,9 @@ package:
   name: grabseqs
   version: '{{ version }}'
 
+source:
+  url: https://github.com/louiejtaylor/grabseqs/archive/{{ version }}.tar.gz
+
 requirements:
   run:
     - sra-tools>2.9
