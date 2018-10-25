@@ -2,5 +2,5 @@
 
 mkdir -p ${PREFIX}/bin
 
-cp bin/grabseqs ${PREFIX}/bin
+cp ${SRC_DIR}/bin/grabseqs ${PREFIX}/bin
 chmod +x ${PREFIX}/bin/grabseqs
