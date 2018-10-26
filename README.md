@@ -21,7 +21,7 @@ Usage:
       -h, --help  show this help message and exit
       -o OUTDIR   directory in which to save output. created if it doesn't exist.
       -m          save SRA metadata
-      -t THREADS  threads to use (for fasterq-dump only)
+      -t THREADS  threads to use (for fasterq-dump/pigz)
       -r RETRIES  number of times to retry download
       
  Downloads unzipped (for now) .fastq files to `OUTDIR` (or the working directory if not specified).

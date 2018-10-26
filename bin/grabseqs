@@ -61,7 +61,7 @@ if __name__ == "__main__":
 	parser_sra.add_argument('-m', dest="metadata", action="store_true",
 				help="save SRA metadata")
 	parser_sra.add_argument('-t',dest="threads", type=int, default=1,
-				help="threads to use (for fasterq-dump only)")
+				help="threads to use (for fasterq-dump/pigz)")
 	parser_sra.add_argument('-r',dest="retries", type=int, default=0,
 				help="number of times to retry download")
 
