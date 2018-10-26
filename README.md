@@ -42,4 +42,4 @@ These are automatically installed through Conda--if you don't use Conda, make su
 
 ## History
 
-This project spawned out of/incorporates code from [hisss](https://github.com/louiejtaylor/hisss); many thanks to @ArwaAbbas for helping make this work!
+This project spawned out of/incorporates code from [hisss](https://github.com/louiejtaylor/hisss); many thanks to [ArwaAbbas](https://github.com/ArwaAbbas) for helping make this work!
