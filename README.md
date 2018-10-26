@@ -2,14 +2,20 @@
 
 Utility to download reads from all samples relating to a single BioProject/SRP/ERP from NCBI SRA.
 
-(in active development--tests/Conda release coming soon)
+(in active development--tests and more features coming soon)
 
-## Running
+## Quick start
 
-Run like:
+Install:
+
+    conda install -c louiejtaylor -c bioconda grabseqs
+
+Run:
 
     grabseqs sra SRP#######
-    
+
+## Options
+
 Usage:
 
     usage: grabseqs sra [-h] [-o OUTDIR] [-m] [-t THREADS] [-r RETRIES] id
@@ -24,25 +30,16 @@ Usage:
       -t THREADS  threads to use (for fasterq-dump/pigz)
       -r RETRIES  number of times to retry download
       
- Downloads unzipped (for now) .fastq files to `OUTDIR` (or the working directory if not specified).
-      
+Downloads .fastq.gz files to `OUTDIR` (or the working directory if not specified). If the `-m` flag is passed, saves metadata to `OUTDIR`.
+
 ## Dependencies
   
    - Python 3 (argparse, requests, subprocess)
-   - sra-tools
+   - sra-tools>2.9
    - pigz
 
-Pass the `requirements.txt` from this repository to Conda to painlessly install all dependencies:
-    
-    conda install -c bioconda --file requirements.txt 
+These are automatically installed through Conda--if you don't use Conda, make sure these are installed and put the executable (bin/grabseqs) somewhere useful.
 
-## Install
+## History
 
-Conda recipe coming soon. In the meantime you can clone the repo:
-
-    git clone https://github.com/louiejtaylor/grabseqs
-
-Then run as above:
-
-    cd grabseqs
-    ./grabseqs sra SRP#######
+This project spawned out of/incorporates code from [hisss](https://github.com/louiejtaylor/hisss); many thanks to [ArwaAbbas](https://github.com/ArwaAbbas) for helping make this work!
