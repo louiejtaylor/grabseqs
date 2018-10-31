@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import requests, argparse, sys, os
+import requests, argparse, sys, os, time
 from subprocess import call
 
 # Test with SRP159164 (single) or ERP020555 (single and paired)
@@ -42,6 +42,7 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc=''):
 			rgzip = call(["pigz -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
 			break
 		else:
+			time.sleep(60) #TODO: user-modifiable
 			retries -= 1
 	return retcode
 
