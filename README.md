@@ -1,6 +1,6 @@
 # grabseqs
 
-Utility to download reads from all samples relating to a single BioProject/SRP/ERP from NCBI SRA.
+Utility for simplifying bulk downloadind data from NCBI SRA.
 
 (in active development--tests and more features coming soon)
 
