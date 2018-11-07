@@ -51,12 +51,12 @@ if __name__ == "__main__":
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.1')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.1.1')
 	subpa = parser.add_subparsers(help='repository(ies) available')
 
 	# Parser for SRA data
 	parser_sra = subpa.add_parser('sra', help="download from SRA")
-	parser_sra.add_argument('id', type=str, help="BioProject or [E/S]RP number")
+	parser_sra.add_argument('id', type=str, nargs='+', help="One or more BioProject, ERR/SRR or ERP/SRP number(s)")
 	parser_sra.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_sra.add_argument('-m', dest="metadata", action="store_true",
@@ -78,10 +78,10 @@ if __name__ == "__main__":
 	except AttributeError: # No args were provided
 		print("No arguments found, run `grabseqs -h` or  `grabseqs sra -h` for help")
 		sys.exit(0)
+	for sra_identifier in args.id:
+		acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir)
 
-	acclist = get_sra_acc_metadata(args.id, args.metadata, args.outdir)
-
-	for acc in acclist:
-		run_fasterq_dump(acc, args.retries, args.threads, args.outdir)
+		for acc in acclist:
+			run_fasterq_dump(acc, args.retries, args.threads, args.outdir)
 
 
