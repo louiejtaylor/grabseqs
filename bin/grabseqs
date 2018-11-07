@@ -24,27 +24,36 @@ def get_sra_acc_metadata(pacc, save = False, loc = ''):
 
 	return run_list
 
-def run_fasterq_dump(acc, retries = 0, threads = 1, loc=''):
+def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
 	"""
 	Helper function to run fasterq-dump to grab a particular `acc`ession,
 	with support for a particular number of `retries`. Can use multiple
 	`threads`.
 	"""
+	skip = False
 	retcode = 1
 	while retries >= 0:
-		cmd = ["fasterq-dump", "-e", str(threads)]
-		if loc != "":
-			cmd = cmd + ['-O', loc]	
-		cmd = cmd + [acc]
-		print("downloading " + acc + " using fasterq-dump")
-		retcode = call(cmd)
-		if retcode == 0:
-			rgzip = call(["pigz -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
-			break
-		else:
-			time.sleep(60) #TODO: user-modifiable
-			retries -= 1
-	return retcode
+		if not force:
+			existing = [f for f in os.listdir(loc) if f.endswith('fastq.gz')]
+			for f in existing:
+				if (acc + '.' in f) or (acc + '_' in f):
+					print("found file: " + f + "  matching " + acc + ", skipping download. Pass -f to force download")
+					skip = True
+					break
+		if not skip:
+			print("downloading " + acc + " using fasterq-dump")
+			cmd = ["fasterq-dump", "-e", str(threads), "-f", "-3"]
+			if loc != "":
+				cmd = cmd + ['-O', loc]	
+			cmd = cmd + [acc]
+			retcode = call(cmd)
+			if retcode == 0:
+				rgzip = call(["pigz -f -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
+				break
+			else:
+				time.sleep(60) #TODO: user-modifiable
+				retries -= 1
+		return retcode
 
 if __name__ == "__main__":
 
@@ -56,11 +65,14 @@ if __name__ == "__main__":
 
 	# Parser for SRA data
 	parser_sra = subpa.add_parser('sra', help="download from SRA")
-	parser_sra.add_argument('id', type=str, nargs='+', help="One or more BioProject, ERR/SRR or ERP/SRP number(s)")
+	parser_sra.add_argument('id', type=str, nargs='+', 
+				help="One or more BioProject, ERR/SRR or ERP/SRP number(s)")
 	parser_sra.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_sra.add_argument('-m', dest="metadata", action="store_true",
 				help="save SRA metadata")
+	parser_sra.add_argument('-f', dest="force", action="store_true",
+				help = "force re-download of files")
 	parser_sra.add_argument('-t',dest="threads", type=int, default=1,
 				help="threads to use (for fasterq-dump/pigz)")
 	parser_sra.add_argument('-r',dest="retries", type=int, default=0,
@@ -82,6 +94,6 @@ if __name__ == "__main__":
 		acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir)
 
 		for acc in acclist:
-			run_fasterq_dump(acc, args.retries, args.threads, args.outdir)
+			run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force)
 
 
