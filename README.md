@@ -21,12 +21,6 @@ Download a collection of runs individually:
 Or any combination of the above:
 
     grabseqs sra SRR######## ERP####### PRJNA######## ERR########
-    
-Fun options:
-
-    grabseqs sra -t 10 -m -o data/ -r 3 SRP#######
- 
-(translation: use 10 threads, save metadata, download to the dir `data/`, retry failed downloads 3x, get all samples from SRP#######)
 
 ## Usage
 
