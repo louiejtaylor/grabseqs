@@ -10,22 +10,36 @@ Install:
 
     conda install -c louiejtaylor -c bioconda grabseqs
 
-Run:
+Download all samples from a single SRA Project:
 
     grabseqs sra SRP#######
+    
+Download a collection of runs individually:
+
+    grabseqs sra SRR######## SRR######## SRR########
+    
+Or any combination of the above:
+
+    grabseqs sra SRR######## ERP####### PRJNA######## ERR########
+    
+Fun options:
+
+    grabseqs sra -t 10 -m -o data/ -r 3 SRP#######
+    # translation: use 10 threads, save metadata, download to the dir 'data/', retry thrice, all samples from SRP####### 
 
 ## Options
 
 Usage:
 
-    usage: grabseqs sra [-h] [-o OUTDIR] [-m] [-t THREADS] [-r RETRIES] id
+    usage: grabseqs sra [-h] [-o OUTDIR] [-m] [-t THREADS] [-r RETRIES]
+                    id [id ...]
 
     positional arguments:
-      id          BioProject or [E/S]RP number
+      id          One or more BioProject, ERR/SRR or ERP/SRP number(s)
 
     optional arguments:
       -h, --help  show this help message and exit
-      -o OUTDIR   directory in which to save output. created if it doesn't exist.
+      -o OUTDIR   directory in which to save output. created if it doesn't exist
       -m          save SRA metadata
       -t THREADS  threads to use (for fasterq-dump/pigz)
       -r RETRIES  number of times to retry download
