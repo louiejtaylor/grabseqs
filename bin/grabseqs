@@ -132,13 +132,14 @@ if __name__ == "__main__":
 	except AttributeError: # No args were provided
 		print("No arguments found, run `grabseqs -h` or  `grabseqs sra -h` for help")
 		sys.exit(0)
-	if args.rastid:
-		for rast_proj in args.rastid:
-			target_list = get_mgrast_acc_metadata(rast_proj, args.metadata, args.outdir)
-			print(target_list)
-			for target in target_list:
-				download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force)
-	else:
+	try:
+		if args.rastid:
+			for rast_proj in args.rastid:
+				target_list = get_mgrast_acc_metadata(rast_proj, args.metadata, args.outdir)
+				print(target_list)
+				for target in target_list:
+					download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force)
+	except AttributeError:
 		for sra_identifier in args.id:
 			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir)
 
