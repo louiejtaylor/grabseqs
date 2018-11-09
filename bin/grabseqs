@@ -62,6 +62,10 @@ def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
 	accession numbers. Optional arguments to `save` metadata .csv in a specified
 	`loc`ation.
 	"""
+	if pacc[:3] == "mgm":
+		return [pacc]
+	elif pacc[:3] != "mgp":
+		raise NameError("Unknown prefix: " + pacc[:3] + ". Should be 'mgm' or 'mgp'.")
 	metadata_json = json.loads(requests.get("http://api.metagenomics.anl.gov/metadata/export/"+pacc).text)
 	sample_list = []
 	for sample in metadata_json["samples"]:
@@ -77,11 +81,31 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 	"""
 	#"http://api.metagenomics.anl.gov/download/"  # returns json object with sample info
 
-	#"?file=50.1" # 50.1 is R1, 50.2 (if it exists) is R2
+	#"?file=50.1" # 50.1 is R1, 50.2 (if it exists) is R2 #IN FASTA
 
-	wget_cmd = ["wget", "-O", os.path.join(loc,acc+".fastw"), "http://api.metagenomics.anl.gov/download/"+acc+"?file=050.1"]
-	#TODO
+	fa_path = os.path.join(loc,acc+".fasta")
+	fq_path = os.path.join(loc,acc+".fastq")
+
+	wget_cmd = ["wget", "-O", fa_path, "http://api.metagenomics.anl.gov/download/"+acc+"?file=050.1"]
 	retcode = call(wget_cmd) #TODO: figure out how to parse if not found
+	seq = -1
+	fq = open(fq_path, 'w')
+	with open(fa_path) as f: # convert .fasta to .fastq
+		for line in f:
+			if line[0] == '>':
+				if seq == -1:
+					fq.write('@'+line[1:])
+				else:
+					fq.write(seq+'\n')
+					fq.write('+\n')	
+					fq.write('I'*len(seq)+'\n')
+					fq.write('@'+line[1:])
+				seq = ''
+			else:
+				seq += line.strip()
+	fq.close()
+	rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+
 	return retcode
 
 if __name__ == "__main__":
