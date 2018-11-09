@@ -3,3 +3,4 @@ python>3
 requests
 argparse
 pigz
+wget

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import requests, argparse, sys, os, time
+import requests, argparse, sys, os, time, json
 from subprocess import call
 
 # Test with SRP159164 (single) or ERP020555 (single and paired)
@@ -62,8 +62,12 @@ def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
 	accession numbers. Optional arguments to `save` metadata .csv in a specified
 	`loc`ation.
 	"""
-	#TODO
-	return True
+	metadata_json = json.loads(requests.get("http://api.metagenomics.anl.gov/metadata/export/"+pacc).text)
+	sample_list = []
+	for sample in metadata_json["samples"]:
+		sample_list.append(sample["libraries"][0]["data"]["metagenome_id"]["value"]) #metadata: ["data"]
+	#TODO: Save metadata detail
+	return sample_list
 
 def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 	"""
@@ -71,8 +75,10 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 	with support for a particular number of `retries`. Can use multiple
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""
+#	"http://api.metagenomics.anl.gov/download/" "?file=50.1"	
+	wget_cmd = ["wget", "-O", acc+".fastw", "http://api.metagenomics.anl.gov/download/"+acc+"?file=050.1"]
 	#TODO
-	retcode = 1
+	retcode = call(wget_cmd)
 	return retcode
 
 if __name__ == "__main__":
@@ -123,16 +129,17 @@ if __name__ == "__main__":
 	except AttributeError: # No args were provided
 		print("No arguments found, run `grabseqs -h` or  `grabseqs sra -h` for help")
 		sys.exit(0)
-	#if args.rastid:
-		#for rast_proj in args.rastid:
-			#target_list = get_mgrast_acc_metadata(rast_proj, args.metadata, args.outdir)
-			#for target in target_list:
-				#download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force)
-	#else:
-	for sra_identifier in args.id:
-		acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir)
+	if args.rastid:
+		for rast_proj in args.rastid:
+			target_list = get_mgrast_acc_metadata(rast_proj, args.metadata, args.outdir)
+			print(target_list)
+			for target in target_list:
+				download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force)
+	else:
+		for sra_identifier in args.id:
+			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir)
 
-		for acc in acclist:
-			run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force)
+			for acc in acclist:
+				run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force)
 
 
