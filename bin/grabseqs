@@ -76,7 +76,7 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""
 #	"http://api.metagenomics.anl.gov/download/" "?file=50.1"	
-	wget_cmd = ["wget", "-O", acc+".fastw", "http://api.metagenomics.anl.gov/download/"+acc+"?file=050.1"]
+	wget_cmd = ["wget", "-O", os.path.join(loc,acc+".fastw"), "http://api.metagenomics.anl.gov/download/"+acc+"?file=050.1"]
 	#TODO
 	retcode = call(wget_cmd)
 	return retcode
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 	# Parser for MG-RAST data
 	parser_rast = subpa.add_parser('mgrast', help="download from MG-RAST")
 	parser_rast.add_argument('rastid', type=str, nargs='+', 
-				help="One or more MG-RAST project identifiers (mgp######)")
+				help="One or more MG-RAST project identifiers (mgp####)")
 	parser_rast.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_rast.add_argument('-m', dest="metadata", action="store_true",
