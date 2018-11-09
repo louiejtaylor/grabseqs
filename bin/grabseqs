@@ -75,10 +75,13 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 	with support for a particular number of `retries`. Can use multiple
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""
-#	"http://api.metagenomics.anl.gov/download/" "?file=50.1"	
+	#"http://api.metagenomics.anl.gov/download/"  # returns json object with sample info
+
+	#"?file=50.1" # 50.1 is R1, 50.2 (if it exists) is R2
+
 	wget_cmd = ["wget", "-O", os.path.join(loc,acc+".fastw"), "http://api.metagenomics.anl.gov/download/"+acc+"?file=050.1"]
 	#TODO
-	retcode = call(wget_cmd)
+	retcode = call(wget_cmd) #TODO: figure out how to parse if not found
 	return retcode
 
 if __name__ == "__main__":

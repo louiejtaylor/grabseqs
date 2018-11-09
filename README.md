@@ -1,8 +1,8 @@
 # grabseqs
 
-Utility for simplifying bulk downloadind data from NCBI SRA.
+Utility for simplifying bulk downloading data from NCBI SRA.
 
-(in active development--tests and more features coming soon)
+(in active development--tests and more repositories [MG-RAST] coming soon)
 
 ## Quick start
 
