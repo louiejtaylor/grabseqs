@@ -137,7 +137,7 @@ if __name__ == "__main__":
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.1.1')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.0')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	# Parser for SRA data

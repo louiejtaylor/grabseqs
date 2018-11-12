@@ -1,4 +1,4 @@
-{% set version = "0.1.1" %}
+{% set version = "0.2.0" %}
 
 package:
   name: grabseqs
@@ -14,6 +14,7 @@ requirements:
     - requests
     - argparse
     - pigz
+    - wget 
 
 test:
   commands:
