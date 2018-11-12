@@ -38,7 +38,7 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
 			for f in existing:
 				if (acc + '.' in f) or (acc + '_' in f):
 					print("found file: " + f + "  matching " + acc + ", skipping download. Pass -f to force download")
-				skip = True
+					skip = True
 					break
 		if not skip:
 			print("downloading " + acc + " using fasterq-dump")
