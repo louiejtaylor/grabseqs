@@ -52,6 +52,7 @@ Downloads .fastq.gz files to `OUTDIR` (or the working directory if not specified
    - Python 3 (argparse, requests, subprocess)
    - sra-tools>2.9
    - pigz
+   - wget
 
 These are automatically installed through Conda--if you don't use Conda, make sure these are installed, then put the executable (bin/grabseqs) somewhere useful.
 

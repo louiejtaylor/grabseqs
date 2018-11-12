@@ -154,7 +154,7 @@ if __name__ == "__main__":
 			if not os.path.exists(args.outdir):
 				os.makedirs(args.outdir)
 	except AttributeError: # No args were provided
-		print("No arguments found, run `grabseqs -h` or  `grabseqs sra -h` for help")
+		print("Subcommand not specified, run `grabseqs -h` or  `grabseqs sra -h` for help")
 		sys.exit(0)
 	try:
 		if args.rastid:
