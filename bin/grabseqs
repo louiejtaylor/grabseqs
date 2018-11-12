@@ -79,32 +79,49 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 	with support for a particular number of `retries`. Can use multiple
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""
-	#"http://api.metagenomics.anl.gov/download/"  # returns json object with sample info
+	read_stages = ["050.1", "050.2"] # R1 and R2 (if paired)
 
-	#"?file=50.1" # 50.1 is R1, 50.2 (if it exists) is R2 #IN FASTA
+	metadata_json = json.loads(requests.get("http://api.metagenomics.anl.gov/download/"+acc).text)
+	stages_to_grab = []
+	for stage in metadata_json["data"]:
+		if stage["file_id"] in read_stages:
+			stages_to_grab.append(stage["file_id"])
+	stages_to_grab = sorted(stages_to_grab) # sort because json
 
-	fa_path = os.path.join(loc,acc+".fasta")
-	fq_path = os.path.join(loc,acc+".fastq")
+	if len(stages_to_grab) == 0:
+		raise Exception("No sequences found for accession: "+acc)
+	else:
+		if len(stages_to_grab) == 1:
+			fext = [""] # unpaired, no ext
+		else:
+			fext = ["_"+str(i+1) for i in range(len(stages_to_grab))] # paired
 
-	wget_cmd = ["wget", "-O", fa_path, "http://api.metagenomics.anl.gov/download/"+acc+"?file=050.1"]
-	retcode = call(wget_cmd) #TODO: figure out how to parse if not found
-	seq = -1
-	fq = open(fq_path, 'w')
-	with open(fa_path) as f: # convert .fasta to .fastq
-		for line in f:
-			if line[0] == '>':
-				if seq == -1:
-					fq.write('@'+line[1:])
+	fa_paths = [os.path.join(loc,acc+ext+".fasta") for ext in fext]
+	fq_paths = [os.path.join(loc,acc+ext+".fastq") for ext in fext]
+
+	for i in range(len(fa_paths)):
+		fa_path = fa_paths[i]
+		fq_path = fq_paths[i]
+		wget_cmd = ["wget", "-O", fa_path, "http://api.metagenomics.anl.gov/download/"+acc+"?file="+stages_to_grab[i]]
+		retcode = call(wget_cmd) #TODO: figure out how to parse if not found
+		seq = -1
+		fq = open(fq_path, 'w')
+		with open(fa_path) as f: # convert .fasta to .fastq
+			for line in f:
+				if line[0] == '>':
+					if seq == -1:
+						fq.write('@'+line[1:])
+					else:
+						fq.write(seq+'\n')
+						fq.write('+\n')	
+						fq.write('I'*len(seq)+'\n')
+						fq.write('@'+line[1:])
+					seq = ''
 				else:
-					fq.write(seq+'\n')
-					fq.write('+\n')	
-					fq.write('I'*len(seq)+'\n')
-					fq.write('@'+line[1:])
-				seq = ''
-			else:
-				seq += line.strip()
-	fq.close()
-	rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+					seq += line.strip()
+		fq.close()
+		retcode = call(["rm "+fa_path], shell=True) # get rid of old fasta
+		rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
 
 	return retcode
 
