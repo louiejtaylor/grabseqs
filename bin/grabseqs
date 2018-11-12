@@ -38,7 +38,7 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
 			for f in existing:
 				if (acc + '.' in f) or (acc + '_' in f):
 					print("found file: " + f + "  matching " + acc + ", skipping download. Pass -f to force download")
-				skip = True
+					skip = True
 					break
 		if not skip:
 			print("downloading " + acc + " using fasterq-dump")
@@ -70,7 +70,12 @@ def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
 	sample_list = []
 	for sample in metadata_json["samples"]:
 		sample_list.append(sample["libraries"][0]["data"]["metagenome_id"]["value"]) #metadata: ["data"]
-	#TODO: Save metadata detail
+	if save:
+		f = open(os.path.join(loc,pacc+".json"), 'w')
+		f.write(str(metadata_json))
+		f.close()
+		#TODO: Save metadata detail
+		
 	return sample_list
 
 def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
@@ -106,6 +111,7 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 		retcode = call(wget_cmd) #TODO: figure out how to parse if not found
 		seq = -1
 		fq = open(fq_path, 'w')
+		print("Converting .fasta to .fastq (adding dummy quality scores)")
 		with open(fa_path) as f: # convert .fasta to .fastq
 			for line in f:
 				if line[0] == '>':
@@ -121,6 +127,7 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False):
 					seq += line.strip()
 		fq.close()
 		retcode = call(["rm "+fa_path], shell=True) # get rid of old fasta
+		print("Compressing .fastq")
 		rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
 
 	return retcode
