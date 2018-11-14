@@ -29,6 +29,11 @@ Fun options:
     grabseqs sra -t 10 -m -o data/ -r 3 SRP#######
 
 (translation: use 10 threads, save metadata, download to the dir `data/`, retry failed downloads 3x, get all samples from SRP#######)
+    
+If you'd like to do a dry run and just get a list of samples that will be downloaded, pass `-l`:
+    
+    grabseqs sra -l SRP########
+
 
 Full usage:
 
@@ -44,6 +49,7 @@ Full usage:
       -m          save SRA metadata
       -t THREADS  threads to use (for fasterq-dump/pigz)
       -r RETRIES  number of times to retry download
+      -l          list (but do not download) samples to be grabbed
       
 Downloads .fastq.gz files to `OUTDIR` (or the working directory if not specified). If the `-m` flag is passed, saves metadata to `OUTDIR`.
 
