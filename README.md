@@ -6,7 +6,7 @@ Utility for simplifying bulk downloading data from NCBI SRA.
 
 ## Quick start
 
-Install:
+Install [via conda](https://anaconda.org/louiejtaylor/grabseqs):
 
     conda install -c louiejtaylor -c bioconda grabseqs
 
