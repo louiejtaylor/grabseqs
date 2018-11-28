@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 
 import requests, argparse, sys, os, time, json
 from subprocess import call
 
 # Test with SRP159164 (single) or ERP020555 (single and paired)
 
-def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False):
+def get_sra_acc_metadata(pacc, save = False, loc = '.', list_only = False):
 	"""
 	Function to get list of SRA accession numbers from a particular project.
 	Takes project accession number `pacc` and returns a list of SRA 
