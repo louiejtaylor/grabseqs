@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
 import requests, argparse, sys, os, time, json
 from subprocess import call
