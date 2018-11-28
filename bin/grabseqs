@@ -5,7 +5,7 @@ from subprocess import call
 
 # Test with SRP159164 (single) or ERP020555 (single and paired)
 
-def get_sra_acc_metadata(pacc, save = False, loc = '.', list_only = False):
+def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False):
 	"""
 	Function to get list of SRA accession numbers from a particular project.
 	Takes project accession number `pacc` and returns a list of SRA 
@@ -45,7 +45,10 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
 	retcode = 1
 	while retries >= 0:
 		if not force:
-			existing = [f for f in os.listdir(loc) if f.endswith('fastq.gz')]
+			try:
+				existing = [f for f in os.listdir(loc) if f.endswith('fastq.gz')]
+			except FileNotFoundError:
+				existing = []
 			for f in existing:
 				if (acc + '.' in f) or (acc + '_' in f):
 					print("found file: " + f + "  matching " + acc + ", skipping download. Pass -f to force download")
