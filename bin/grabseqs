@@ -63,11 +63,16 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
 			retcode = call(cmd)
 			if retcode == 0:
 				rgzip = call(["pigz -f -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
-				break
-			else:
-				time.sleep(60) #TODO?: user-modifiable
+				if rgzip == 0:
+					break
+
+			# only here if downloading and zipping failed
+			if retries > 0:
+				time.sleep(100) #TODO?: user-modifiable
 				retries -= 1
-		return retcode
+			else:
+				raise Exception("download for "+acc+" failed. fasterq-dump returned "+str(retcode)+", pigz returned "+str(rgzip)+".")
+
 
 def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
 	"""
@@ -163,7 +168,7 @@ if __name__ == "__main__":
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.5')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.6')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	# Parser for SRA data
