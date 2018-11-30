@@ -4,6 +4,8 @@ Utility for simplifying bulk downloading data from NCBI SRA.
 
 (in active development--tests and more repositories [MG-RAST] coming soon)
 
+[![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=svg)](https://circleci.com/gh/louiejtaylor/grabseqs)
+
 ## Quick start
 
 Install [via conda](https://anaconda.org/louiejtaylor/grabseqs):
