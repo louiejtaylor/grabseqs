@@ -11,5 +11,5 @@ jobs:
       - checkout
       - run:
         name: hello
-        command: |
-          echo "hello world"
+          command: |
+            echo "hello world"
