@@ -12,6 +12,13 @@ python bin/grabseqs -h
 
 # more thorough tests
 mkdir -p $HOME/tmp_test
+## test listing
 if [ `python bin/grabseqs sra -l SRP057027 | wc -l` -ne 369 ] ; then
+    exit 1
+fi
+
+## test metadata download
+python bin/grabseqs sra -m -l -o $HOME/tmp_test/test_metadata/ SRP057027
+if [ `cat $HOME/tmp_test/test_metadata/SRP057027.csv | wc -l` -ne 370 ] ; then
     exit 1
 fi
