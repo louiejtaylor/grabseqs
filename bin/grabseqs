@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
 	parser_sra.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
-	parser_sra.add_argument('-r',dest="retries", type=int, default=0,
+	parser_sra.add_argument('-r',dest="retries", type=int, default=2,
 				help="number of times to retry download")
 	parser_sra.add_argument('-t',dest="threads", type=int, default=1,
 				help="threads to use (for fasterq-dump/pigz)")
@@ -214,7 +214,7 @@ if __name__ == "__main__":
 		if args.outdir != "":
 			if not os.path.exists(args.outdir):
 				os.makedirs(args.outdir)
-	except AttributeError: # No args were provided
+	except AttributeError: # No subcommand provided (all subcomands have `-o`)
 		print("Subcommand not specified, run `grabseqs -h` or  `grabseqs sra -h` for help")
 		sys.exit(0)
 	try:
