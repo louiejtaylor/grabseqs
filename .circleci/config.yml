@@ -9,7 +9,4 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - run:
-        name: hello
-          command: |
-            echo "hello world"
+      - run: echo "hello world"
