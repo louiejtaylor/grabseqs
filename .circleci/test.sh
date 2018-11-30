@@ -2,5 +2,5 @@
 
 source activate grabseqs-test
 
-bin/grabseqs -v
-bin/grabseqs -h
+python bin/grabseqs -v
+python bin/grabseqs -h
