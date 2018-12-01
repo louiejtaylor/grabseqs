@@ -25,9 +25,9 @@ if [ `cat $HOME/tmp_test/test_metadata/SRP057027.tsv | wc -l` -ne 371 ] ; then
 fi
 echo ":D SRA metadata test passed"
 ## download a tiny sample
-python bin/grabseqs sra -t 2 -o $HOME/tmp_test/test_tiny ERR2279063
-ls $HOME/tmp_test/test_tiny/ERR2279063_1.fastq.gz > /dev/null
-ls $HOME/tmp_test/test_tiny/ERR2279063_1.fastq.gz > /dev/null
+python bin/grabseqs sra -t 2 -o $HOME/tmp_test/test_tiny_sra ERR2279063
+ls $HOME/tmp_test/test_tiny_sra/ERR2279063_1.fastq.gz > /dev/null
+ls $HOME/tmp_test/test_tiny_sra/ERR2279063_1.fastq.gz > /dev/null
 echo ":D SRA sample download test passed"
 
 # MG-RAST
@@ -36,6 +36,9 @@ if [ `python bin/grabseqs mgrast -l mgp8384 | wc -l` -ne 12 ]; then
     exit 1
 fi
 echo ":D MG-RAST sample listing test passed"
+## download a tiny sample
+python bin/grabseqs -o $HOME/tmp_test/test_tiny_mg mgm4793571.3
+ls $HOME/tmp_test/test_tiny-mg/mgm4793571.3.fastq.gz > /dev/null
 
 # test conda install
 conda install -c louiejtaylor grabseqs > /dev/null
