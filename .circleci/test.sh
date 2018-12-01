@@ -25,7 +25,7 @@ if [ `cat $HOME/tmp_test/test_metadata/SRP057027.tsv | wc -l` -ne 371 ] ; then
 fi
 echo ":D SRA metadata test passed"
 ## download two tiny samples
-python bin/grabseqs sra -o -t 2 $HOME/tmp_test/test_tiny SRR7869915 ERR2279063 
+python bin/grabseqs sra -t 2 -o $HOME/tmp_test/test_tiny SRR7869915 ERR2279063 
 ls $HOME/tmp_test/test_tiny/SRR7869915_1.fastq.gz -lh
 ls $HOME/tmp_test/test_tiny/SRR7869915_2.fastq.gz > /dev/null
 ls $HOME/tmp_test/test_tiny/ERR2279063_1.fastq.gz -lh
