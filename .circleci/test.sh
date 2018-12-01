@@ -27,7 +27,7 @@ echo ":D SRA metadata test passed"
 ## download a tiny sample
 python bin/grabseqs sra -t 2 -o $HOME/tmp_test/test_tiny_sra ERR2279063
 ls $HOME/tmp_test/test_tiny_sra/ERR2279063.fastq.gz > /dev/null
-echo ":D SRA sample download test passed"
+echo ":D SRA unpaired sample download test passed"
 
 # MG-RAST
 ## test sample listing
@@ -36,8 +36,9 @@ if [ `python bin/grabseqs mgrast -l mgp8384 | wc -l` -ne 12 ]; then
 fi
 echo ":D MG-RAST sample listing test passed"
 ## download a tiny sample
-python bin/grabseqs -o $HOME/tmp_test/test_tiny_mg mgm4793571.3
+python bin/grabseqs mgrast -o $HOME/tmp_test/test_tiny_mg mgm4793571.3
 ls $HOME/tmp_test/test_tiny-mg/mgm4793571.3.fastq.gz > /dev/null
+echo ":D MG-RAST unpaired sample download test passed"
 
 # test conda install
 conda install -c louiejtaylor grabseqs > /dev/null
