@@ -38,7 +38,6 @@ echo ":D MG-RAST sample listing test passed"
 ## download a tiny sample
 python bin/grabseqs mgrast -o $HOME/tmp_test/test_tiny_mg mgm4793571.3
 ls $HOME/tmp_test/test_tiny-mg/ #mgm4793571.3.fastq.gz > /dev/null
-head $HOME/tmp_test/test_tiny-mg/*
 echo ":D MG-RAST unpaired sample download test passed"
 
 # test conda install
