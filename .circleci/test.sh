@@ -26,8 +26,7 @@ fi
 echo ":D SRA metadata test passed"
 ## download a tiny sample
 python bin/grabseqs sra -t 2 -o $HOME/tmp_test/test_tiny ERR2279063
-ls $HOME/tmp_test/test_tiny/ERR2279063_1.fastq.gz > /dev/null
-ls $HOME/tmp_test/test_tiny/ERR2279063_1.fastq.gz > /dev/null
+ls $HOME/tmp_test/test_tiny/ERR2279063*fastq.gz
 echo ":D SRA sample download test passed"
 
 # MG-RAST
