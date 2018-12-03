@@ -194,7 +194,7 @@ if __name__ == "__main__":
 	# Parser for MG-RAST data
 	parser_rast = subpa.add_parser('mgrast', help="download from MG-RAST")
 	parser_rast.add_argument('rastid', type=str, nargs='+', 
-				help="One or more MG-RAST project identifiers (mgp####)")
+				help="One or more MG-RAST project or sample identifiers (mgp####/mgm######)")
 
 	parser_rast.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
