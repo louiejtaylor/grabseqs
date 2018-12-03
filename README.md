@@ -1,6 +1,6 @@
 # grabseqs
 
-Utility for simplifying bulk downloading data from NCBI SRA.
+Utility for simplifying bulk downloading data from next-generation sequencing repositories, like [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra/) or [MG-RAST](http://www.mg-rast.org/).
 
 [![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=shield)](https://circleci.com/gh/louiejtaylor/grabseqs)
 
