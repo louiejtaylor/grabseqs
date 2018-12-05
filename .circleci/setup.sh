@@ -11,8 +11,4 @@ bash Miniconda3-latest-Linux-x86_64.sh -b -p
 export PATH=${PATH}:${HOME}/miniconda3/bin
 
 # install requirements
-conda create -n grabseqs-test
-source activate grabseqs-test
-conda install -c bioconda -c conda-forge --quiet --file requirements.txt
-
-
+conda env update --name=grabseqs-test --file environment.yml -q
