@@ -39,9 +39,11 @@ If you'd like to do a dry run and just get a list of samples that will be downlo
 Full usage:
 
     usage: grabseqs sra [-h] [-o OUTDIR] [-r RETRIES] [-t THREADS] [-f] [-l] [-m]
+    
                         id [id ...]
     positional arguments:
       id          One or more BioProject, ERR/SRR or ERP/SRP number(s)
+      
     optional arguments:
       -h, --help  show this help message and exit
       -o OUTDIR   directory in which to save output. created if it doesn't exist
