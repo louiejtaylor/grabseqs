@@ -13,6 +13,6 @@ export PATH=${PATH}:${HOME}/miniconda3/bin
 # install requirements
 conda create -n grabseqs-test
 source activate grabseqs-test
-conda install -c bioconda -c conda-forge --file requirements.txt
+conda install -c bioconda -c conda-forge --quiet --file requirements.txt
 
 
