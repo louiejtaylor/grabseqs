@@ -5,7 +5,7 @@ from subprocess import call
 
 # Test with SRP159164 (single) or ERP020555 (single and paired)
 
-def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False):
+def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR_parsing = False):
 	"""
 	Function to get list of SRA accession numbers from a particular project.
 	Takes project accession number `pacc` and returns a list of SRA 
@@ -13,6 +13,7 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False):
 	`loc`ation.
 	Originally featured in: https://github.com/louiejtaylor/hisss
 	"""
+	pacc = pacc.strip()
 	metadata = requests.get("http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&db=sra&rettype=runinfo&term="+pacc)
 	if save:
 		f = open(os.path.join(loc,pacc+".tsv"), 'w')
@@ -33,6 +34,9 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False):
 				raise Exception("Unknown library layout: "+layout_list[i])
 		return []
 	else:
+		if no_SRR_parsing:
+			if pacc.startswith('SRR') or pacc.startswith('ERR'):
+				return [pacc]
 		return run_list
 
 def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
@@ -169,7 +173,7 @@ if __name__ == "__main__":
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.7')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.8')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	# Parser for SRA data
@@ -190,7 +194,9 @@ if __name__ == "__main__":
 				help="list (but do not download) samples to be grabbed")
 	parser_sra.add_argument('-m', dest="metadata", action="store_true",
 				help="save SRA metadata")
-
+	parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true",
+				help="do not parse SRR/ERR (pass straight to fasterq-dump)")
+	
 	# Parser for MG-RAST data
 	parser_rast = subpa.add_parser('mgrast', help="download from MG-RAST")
 	parser_rast.add_argument('rastid', type=str, nargs='+', 
@@ -228,7 +234,7 @@ if __name__ == "__main__":
 					download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
 	except AttributeError:
 		for sra_identifier in args.id:
-			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir, args.list)
+			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir, args.list, args.no_SRR_parsing)
 
 			for acc in acclist:
 				run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force)

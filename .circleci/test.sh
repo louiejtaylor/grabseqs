@@ -41,7 +41,7 @@ ls $HOME/tmp_test/test_tiny_mg/mgm4793571.3.fastq.gz > /dev/null
 echo ":D MG-RAST unpaired sample download test passed"
 
 # test conda install
-conda install -c louiejtaylor --quiet grabseqs 
+conda install -c louiejtaylor -qy grabseqs 
 echo ":D  conda install test passed"
 
 # cleanup
