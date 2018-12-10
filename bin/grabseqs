@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import requests, argparse, sys, os, time, json
+import requests, argparse, sys, os, time, json, glob
 from subprocess import call
 
 # Test with SRP159164 (single) or ERP020555 (single and paired)
@@ -67,10 +67,12 @@ def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
 			retcode = call(cmd)
 			if retcode == 0:
 				rgzip = call(["pigz -f -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
-				if rgzip == 0:
-					break
+				if rgzip == 0: #pigz exit code is zero even if file not found -_-
+					if len(glob.glob(os.path.join(loc,acc+'*'+'fastq.gz'))) > 0:
+						break
 
 			# only here if downloading and zipping failed
+			print("SRA download for acc "+acc+" failed, retrying "+str(retries)+" more times.")
 			if retries > 0:
 				time.sleep(100) #TODO?: user-modifiable
 				retries -= 1
@@ -173,7 +175,7 @@ if __name__ == "__main__":
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.8')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.9')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	# Parser for SRA data
