@@ -39,7 +39,7 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR
 				return [pacc]
 		return run_list
 
-def run_fasterq_dump(acc, retries = 0, threads = 1, loc='', force=False):
+def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False):
 	"""
 	Helper function to run fasterq-dump to grab a particular `acc`ession,
 	with support for a particular number of `retries`. Can use multiple
