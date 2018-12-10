@@ -52,6 +52,7 @@ Full usage:
       -f          force re-download of files
       -l          list (but do not download) samples to be grabbed
       -m          save SRA metadata
+      --no_parsing  do not parse SRR/ERR (pass straight to fasterq-dump)
       
 Downloads .fastq.gz files to `OUTDIR` (or the working directory if not specified). If the `-m` flag is passed, saves metadata to `OUTDIR`.
 
