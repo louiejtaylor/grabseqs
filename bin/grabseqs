@@ -20,7 +20,10 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR
 		f.write(metadata.text)
 		f.close()
 	lines = [l.split(',') for l in metadata.text.split("\n")]
-	run_col = lines[0].index("Run")
+	try:
+		run_col = lines[0].index("Run")
+	except IndexError:
+		raise IndexError("Could not find samples for accession: "+pacc+". If this accession number is valid, try re-running.")
 	run_list = [l[run_col] for l in lines[1:] if len(l[run_col]) > 0]
 	if list_only:
 		layout_col = lines[0].index("LibraryLayout")
@@ -175,7 +178,7 @@ if __name__ == "__main__":
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.9')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.10')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	# Parser for SRA data
