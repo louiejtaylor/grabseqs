@@ -81,6 +81,8 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False):
 				retries -= 1
 			else:
 				raise Exception("download for "+acc+" failed. fasterq-dump returned "+str(retcode)+", pigz returned "+str(rgzip)+".")
+		else:
+			break
 
 
 def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
