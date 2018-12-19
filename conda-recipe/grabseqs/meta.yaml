@@ -1,4 +1,4 @@
-{% set version = "0.2.11" %}
+{% set version = "0.2.12" %}
 
 package:
   name: grabseqs

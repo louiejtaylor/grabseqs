@@ -164,6 +164,10 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 							seq = ''
 						else:
 							seq += line.strip()
+				if len(seq) > 0:
+					fq.write(seq+'\n')
+					fq.write('+\n')
+					fq.write('I'*len(seq)+'\n')
 				fq.close()
 				retcode = call(["rm "+fa_path], shell=True) # get rid of old fasta
 			elif first_line[0] == "@":
@@ -180,7 +184,7 @@ if __name__ == "__main__":
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.11')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.2.12')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	# Parser for SRA data
