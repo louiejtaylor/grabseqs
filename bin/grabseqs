@@ -42,9 +42,9 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR
 				return [pacc]
 		return run_list
 
-def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False):
+def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdump=False):
 	"""
-	Helper function to run fasterq-dump to grab a particular `acc`ession,
+	Helper function to run fast(er)q-dump to grab a particular `acc`ession,
 	with support for a particular number of `retries`. Can use multiple
 	`threads`.
 	"""
@@ -62,14 +62,20 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False):
 					skip = True
 					break
 		if not skip:
-			print("downloading " + acc + " using fasterq-dump")
-			cmd = ["fasterq-dump", "-e", str(threads), "-f", "-3"]
+			if fastqdump:
+				print("downloading " + acc + " using fastq-dump")
+				cmd = ["fastq-dump", "--gzip", "--split-3", "--skip-technical"]
+			else:
+				print("downloading " + acc + " using fasterq-dump")
+				cmd = ["fasterq-dump", "-e", str(threads), "-f", "-3"]
 			if loc != "":
 				cmd = cmd + ['-O', loc]	
 			cmd = cmd + [acc]
 			retcode = call(cmd)
+			rgzip = 0
 			if retcode == 0:
-				rgzip = call(["pigz -f -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
+				if not fastqdump:
+					rgzip = call(["pigz -f -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
 				if rgzip == 0: #pigz exit code is zero even if file not found -_-
 					if len(glob.glob(os.path.join(loc,acc+'*'+'fastq.gz'))) > 0:
 						break
@@ -207,6 +213,8 @@ if __name__ == "__main__":
 				help="save SRA metadata")
 	parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true",
 				help="do not parse SRR/ERR (pass straight to fasterq-dump)")
+	parser_sra.add_argument("--use_fastq_dump", dest="fastqdump", action="store_true",
+				help="use legacy fastq-dump instead of fasterq-dump (no multithreaded downloading)")
 	
 	# Parser for MG-RAST data
 	parser_rast = subpa.add_parser('mgrast', help="download from MG-RAST")
@@ -248,6 +256,6 @@ if __name__ == "__main__":
 			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir, args.list, args.no_SRR_parsing)
 
 			for acc in acclist:
-				run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force)
+				run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force, args.fastqdump)
 
 
