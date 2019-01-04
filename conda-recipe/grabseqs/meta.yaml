@@ -1,4 +1,4 @@
-{% set version = "0.3.1" %}
+{% set version = "0.3.0" %}
 
 package:
   name: grabseqs
@@ -8,6 +8,9 @@ source:
   url: https://github.com/louiejtaylor/grabseqs/archive/{{ version }}.tar.gz
 
 requirements:
+  install:
+    - python>3
+    - setuptools
   run:
     - sra-tools>2.9
     - python>3
