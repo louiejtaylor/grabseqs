@@ -1,5 +1,5 @@
 {% set name = "grabseqs" %}
-{% set version = "0.3.2" %}
+{% set version = "0.3.3" %}
 
 package:
   name: "{{ name|lower }}"
@@ -7,7 +7,6 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 66682042eb72a4653503f4d15d2a5c367fbe0cefe652ae45a45d7fa69668a0da
 
 build:
   number: 0

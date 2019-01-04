@@ -10,50 +10,11 @@ def main():
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.3.2')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.3.3')
 	subpa = parser.add_subparsers(help='repositories available')
 
-	# Parser for SRA data
-	parser_sra = subpa.add_parser('sra', help="download from SRA")
-	parser_sra.add_argument('id', type=str, nargs='+', 
-				help="One or more BioProject, ERR/SRR or ERP/SRP number(s)")
-
-	parser_sra.add_argument('-o', dest="outdir", type=str, default="",
-				help="directory in which to save output. created if it doesn't exist")
-	parser_sra.add_argument('-r',dest="retries", type=int, default=2,
-				help="number of times to retry download")
-	parser_sra.add_argument('-t',dest="threads", type=int, default=1,
-				help="threads to use (for fasterq-dump/pigz)")
-
-	parser_sra.add_argument('-f', dest="force", action="store_true",
-				help = "force re-download of files")
-	parser_sra.add_argument('-l', dest="list", action="store_true",
-				help="list (but do not download) samples to be grabbed")
-	parser_sra.add_argument('-m', dest="metadata", action="store_true",
-				help="save SRA metadata")
-	parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true",
-				help="do not parse SRR/ERR (pass straight to fasterq-dump)")
-	parser_sra.add_argument("--use_fastq_dump", dest="fastqdump", action="store_true",
-				help="use legacy fastq-dump instead of fasterq-dump (no multithreaded downloading)")
-	
-	# Parser for MG-RAST data
-	parser_rast = subpa.add_parser('mgrast', help="download from MG-RAST")
-	parser_rast.add_argument('rastid', type=str, nargs='+', 
-				help="One or more MG-RAST project or sample identifiers (mgp####/mgm######)")
-
-	parser_rast.add_argument('-o', dest="outdir", type=str, default="",
-				help="directory in which to save output. created if it doesn't exist")
-	parser_rast.add_argument('-r',dest="retries", type=int, default=0,
-				help="number of times to retry download")
-	parser_rast.add_argument('-t',dest="threads", type=int, default=1,
-				help="threads to use (for pigz)")
-
-	parser_rast.add_argument('-f', dest="force", action="store_true",
-				help = "force re-download of files")
-	parser_rast.add_argument('-l', dest="list", action="store_true",
-				help="list (but do not download) samples to be grabbed")
-	parser_rast.add_argument('-m', dest="metadata", action="store_true",
-				help="save metadata")
+	add_sra_subparser(subpa)
+	add_mgrast_subparser(subpa)
 
 	args = parser.parse_args()
 

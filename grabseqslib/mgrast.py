@@ -1,6 +1,30 @@
 import requests, argparse, sys, os, time, json, glob
 from subprocess import call
 
+def add_mgrast_subparser(subparser):
+	"""
+	Function to add the MG-RAST subparser.
+	"""
+
+	parser_rast = subparser.add_parser('mgrast', help="download from MG-RAST")
+	parser_rast.add_argument('rastid', type=str, nargs='+', 
+				help="One or more MG-RAST project or sample identifiers (mgp####/mgm######)")
+
+	parser_rast.add_argument('-o', dest="outdir", type=str, default="",
+				help="directory in which to save output. created if it doesn't exist")
+	parser_rast.add_argument('-r',dest="retries", type=int, default=0,
+				help="number of times to retry download")
+	parser_rast.add_argument('-t',dest="threads", type=int, default=1,
+				help="threads to use (for pigz)")
+
+	parser_rast.add_argument('-f', dest="force", action="store_true",
+				help = "force re-download of files")
+	parser_rast.add_argument('-l', dest="list", action="store_true",
+				help="list (but do not download) samples to be grabbed")
+	parser_rast.add_argument('-m', dest="metadata", action="store_true",
+				help="save metadata")
+
+
 def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
 	"""
 	Function to get list of MG-RAST sample accession numbers from a particular 
