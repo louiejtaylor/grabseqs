@@ -2,7 +2,7 @@
 
 mkdir -p ${PREFIX}/bin
 
-python ${SRC_DIR}/setup.py
+#python ${SRC_DIR}/setup.py
 
-cp ${SRC_DIR}/bin/grabseqs ${PREFIX}/bin
-chmod +x ${PREFIX}/bin/grabseqs
+#cp ${SRC_DIR}/bin/grabseqs ${PREFIX}/bin
+#chmod +x ${PREFIX}/bin/grabseqs
