@@ -2,7 +2,7 @@ import setuptools
 from distutils.core import setup
 
 setup(name='grabseqslib',
-	version='0.3.1',
+	version='0.3.0',
 	description='Easily download reads from next-gen sequencing repositories like NCBI SRA',
 	author='Louis J Taylor',
 	author_email='l'+'ouis'+'@'+'u'+'penn.edu',
