@@ -2,13 +2,12 @@
 
 set -e
 
+export PATH=${PATH}:${HOME}/miniconda3/bin
+
 # setup
 conda env update --name=grabseqs-test --file environment.yml -q
 source activate grabseqs-test
 python setup.py install
-
-export PATH=${PATH}:${HOME}/miniconda3/bin
-source activate grabseqs-test
 
 # basic tests
 grabseqs -v
