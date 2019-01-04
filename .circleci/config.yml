@@ -11,5 +11,5 @@ jobs:
 
     steps:
       - checkout
-      - run: bash .circleci/setup.sh
-      - run: bash .circleci/test.sh
+      - run: bash tests/setup.sh
+      - run: bash tests/test.sh -d $HOME
