@@ -2,8 +2,8 @@ __all__ = ["sra","mgrast"]
 
 import os, sys, argparse
 
-from grabseqslib.sra import get_sra_acc_metadata, run_fasterq_dump
-from grabseqslib.mgrast import get_mgrast_acc_metadata, download_mgrast_sample
+from grabseqslib.sra import get_sra_acc_metadata, run_fasterq_dump, add_sra_subparser
+from grabseqslib.mgrast import get_mgrast_acc_metadata, download_mgrast_sample, add_mgrast_subparser
 
 def main():
 
