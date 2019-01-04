@@ -4,11 +4,17 @@ Utility for simplifying bulk downloading data from next-generation sequencing re
 
 [![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=shield)](https://circleci.com/gh/louiejtaylor/grabseqs)
 
-## Quick start
+## Install
 
-Install [via conda](https://anaconda.org/louiejtaylor/grabseqs):
+Install grabseqs and all dependencies [via conda](https://anaconda.org/louiejtaylor/grabseqs):
 
     conda install -c louiejtaylor -c bioconda grabseqs
+
+Or with pip (and install the [dependencies](https://github.com/louiejtaylor/grabseqs#dependencies) yourself):
+
+    pip install grabseqs
+
+## Quick start
 
 Download all samples from a single SRA Project:
 
@@ -26,7 +32,7 @@ Similar syntax works for MG-RAST:
 
     grabseqs mgrast mgp##### mgm#######
 
-## Usage
+## Detailed usage
 
 Fun options:
 
@@ -82,7 +88,7 @@ Similar options are available for downloading from MG-RAST:
    - pigz
    - wget
 
-These are automatically installed through Conda--if you don't use Conda, make sure these are installed, then put the executable (bin/grabseqs) somewhere useful.
+If you use conda, these will be installed for you!
 
 ## History
 
