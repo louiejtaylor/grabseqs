@@ -1,16 +1,16 @@
 __all__ = ["sra","mgrast"]
 
-import os, sys
+import os, sys, argparse
 
 from grabseqslib.sra import get_sra_acc_metadata, run_fasterq_dump
 from grabseqslib.mgrast import get_mgrast_acc_metadata, download_mgrast_sample
 
-if __name__ == "__main__":
+def main():
 
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.3.0')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.3.2')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	# Parser for SRA data

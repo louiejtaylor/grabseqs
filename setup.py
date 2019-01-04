@@ -9,6 +9,9 @@ setup(name='grabseqs',
 	url='https://github.com/louiejtaylor/grabseqs',
 	packages=['grabseqslib'],
 	license='MIT License',
+	entry_points={'console_scripts': [
+	'grabseqs = grabseqslib:main'
+	]},
 	classifiers = ['Intended Audience :: Science/Research',
 				'Environment :: Console',
 				'Environment :: Web Environment',
