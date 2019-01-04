@@ -1,32 +1,45 @@
-{% set version = "0.3.0" %}
+{% set name = "grabseqs" %}
+{% set version = "0.3.2" %}
 
 package:
-  name: grabseqs
-  version: '{{ version }}'
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
 
 source:
-  url: https://github.com/louiejtaylor/grabseqs/archive/{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 66682042eb72a4653503f4d15d2a5c367fbe0cefe652ae45a45d7fa69668a0da
+
+build:
+  number: 0
+  entry_points:
+    - grabseqs = grabseqslib:main
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv "
 
 requirements:
-  install:
-    - python>3
-    - setuptools
+  host:
+    - pip
+    - python
   run:
+    - python
     - sra-tools>2.9
     - python>3
     - requests
     - argparse
     - pigz
-    - wget 
+    - wget
 
 test:
+  imports:
+    - grabseqslib
   commands:
-    - grabseqs -v
+    - grabseqs --help
 
 about:
   home: https://github.com/louiejtaylor/grabseqs
   license: MIT
   license_family: MIT
-  summary: grabseqs simplifies downloading reads in bulk from SRA projects
-  dev_url: https://github.com/louiejtaylor/grabseqs
+  summary: Easily download reads from next-gen sequencing repositories like NCBI SRA
 
+extra:
+  recipe-maintainers:
+    - louiejtaylor
