@@ -48,10 +48,27 @@ if [ `cat $TMPDIR/test_metadata/SRP057027.tsv | wc -l` -ne 371 ] ; then
 fi
 echo -e "$PASS SRA metadata test passed"
 
-## download a tiny sample
+## unpaired fasterq-dump
 grabseqs sra -t 2 -o $TMPDIR/test_tiny_sra ERR2279063
 ls $TMPDIR/test_tiny_sra/ERR2279063.fastq.gz > /dev/null
 echo -e "$PASS SRA unpaired sample download test passed"
+
+## paired fasterq-dump
+grabseqs sra -t 2 -o $TMPDIR/test_tiny_sra_paired SRR1913936
+ls $TMPDIR/test_tiny_sra_paired/SRR1913936_1.fastq.gz > /dev/null
+ls $TMPDIR/test_tiny_sra_paired/SRR1913936_2.fastq.gz > /dev/null
+echo -e "$PASS SRA paired sample download test passed"
+
+## unpaired fastq-dump
+grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra --use_fastq_dump ERR2279063
+ls $TMPDIR/test_fastqdump_sra/ERR2279063.fastq.gz > /dev/null
+echo -e "$PASS SRA unpaired sample download using fastq-dump test passed"
+
+## paired fasterq-dump
+grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra_paired --use_fastq_dump SRR1913936
+ls $TMPDIR/test_fastqdump_sra_paired/SRR1913936_1.fastq.gz > /dev/null
+ls $TMPDIR/test_fastqdump_sra_paired/SRR1913936_2.fastq.gz > /dev/null
+echo -e "$PASS SRA paired sample download using fastq-dump test passed"
 
 # MG-RAST
 ## test sample listing
