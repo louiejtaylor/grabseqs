@@ -22,6 +22,9 @@ Or any combination of the above:
 
     grabseqs sra SRR######## ERP####### PRJNA######## ERR########
 
+Similar syntax works for MG-RAST:
+
+    grabseqs mgrast mgp##### mgm#######
 
 ## Usage
 
