@@ -1,5 +1,5 @@
 {% set name = "grabseqs" %}
-{% set version = "0.3.3" %}
+{% set version = "0.3.4" %}
 
 package:
   name: "{{ name|lower }}"
@@ -21,7 +21,6 @@ requirements:
   run:
     - python
     - sra-tools>2.9
-    - python>3
     - requests
     - argparse
     - pigz
