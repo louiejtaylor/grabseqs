@@ -75,8 +75,12 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
 	retcode = 1
 	while retries >= 0:
 		if not force:
+			if loc == '':
+				loc_to_search = os.getcwd()
+			else:
+				loc_to_search = loc
 			try:
-				existing = [f for f in os.listdir(loc) if f.endswith('fastq.gz')]
+				existing = [f for f in os.listdir(loc_to_search) if f.endswith('fastq.gz')]
 			except FileNotFoundError:
 				existing = []
 			for f in existing:

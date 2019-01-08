@@ -54,15 +54,17 @@ Full usage:
       id          One or more BioProject, ERR/SRR or ERP/SRP number(s)
       
     optional arguments:
-      -h, --help    show this help message and exit
-      -o OUTDIR     directory in which to save output. created if it doesn't exist
-      -r RETRIES    number of times to retry download
-      -t THREADS    threads to use (for fasterq-dump/pigz)
-      -f            force re-download of files
-      -l            list (but do not download) samples to be grabbed
-      -m            save SRA metadata
-      --no_parsing  do not parse SRR/ERR (pass straight to fasterq-dump)
-      
+      -h, --help        show this help message and exit
+      -o OUTDIR         directory in which to save output. created if it doesn't exist
+      -r RETRIES        number of times to retry download
+      -t THREADS        threads to use (for fasterq-dump/pigz)
+      -f                force re-download of files
+      -l                list (but do not download) samples to be grabbed
+      -m                save SRA metadata
+      --no_parsing      do not parse SRR/ERR (pass straight to fasterq-dump)
+      --use_fastq_dump  use legacy fastq-dump instead of fasterq-dump (no
+                        multithreaded downloading)
+ 
 Downloads .fastq.gz files to `OUTDIR` (or the working directory if not specified). If the `-m` flag is passed, saves metadata to `OUTDIR`.
 
 Similar options are available for downloading from MG-RAST:
