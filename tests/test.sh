@@ -78,10 +78,18 @@ echo -e "$PASS SRA paired sample download using fastq-dump test passed"
 
 ## test no clobber
 t=`grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra ERR2279063`
+echo $t
 if [[ $t != *"Pass -f to force download"* ]] ; then
     exit 1
 fi
-echo -e "$PASS SRA no-clobber passed"
+echo -e "$PASS SRA no-clobber test passed"
+
+## test force
+tf=`grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra -f ERR2279063`
+if [[ $tf == *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS SRA force download test passed"
 
 # MG-RAST
 ## test sample listing
@@ -94,6 +102,21 @@ echo -e "$PASS MG-RAST sample listing test passed"
 grabseqs mgrast -o $TMPDIR/test_tiny_mg mgm4793571.3
 ls $TMPDIR/test_tiny_mg/mgm4793571.3.fastq.gz > /dev/null
 echo -e "$PASS MG-RAST unpaired sample download test passed"
+
+## test no clobber
+u=`grabseqs mgrast -o $TMPDIR/test_tiny_mg mgm4793571.3`
+echo $u
+if [[ $u != *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS MG-RAST no-clobber test passed"
+
+## test force
+u=`grabseqs mgrast -o $TMPDIR/test_tiny_mg -f mgm4793571.3`
+if [[ $u == *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS MG-RAST force download test passed"
 
 # test conda install
 conda install -c louiejtaylor -qy grabseqs 

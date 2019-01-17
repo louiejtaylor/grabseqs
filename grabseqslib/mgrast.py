@@ -1,6 +1,8 @@
 import requests, argparse, sys, os, time, json, glob
 from subprocess import call
 
+from grabseqslib.utils import check_existing
+
 def add_mgrast_subparser(subparser):
 	"""
 	Function to add the MG-RAST subparser.
@@ -74,6 +76,11 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 	if list_only:
 		print(','.join([acc+ext+".fastq.gz" for ext in fext]))
 	else:
+		if not force:
+			found = check_existing(loc, acc)
+			if found != False:
+				print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
+				return False
 		fa_paths = [os.path.join(loc,acc+ext+".fasta") for ext in fext]
 		fq_paths = [os.path.join(loc,acc+ext+".fastq") for ext in fext]
 	
