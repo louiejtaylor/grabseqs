@@ -52,7 +52,11 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR
 	run_list = [l[run_col] for l in lines[1:] if len(l[run_col]) > 0]
 	if list_only:
 		layout_col = lines[0].index("LibraryLayout")
-		layout_list = [l[layout_col] for l in lines[1:] if len(l[run_col]) > 0]
+		if no_SRR_parsing and (pacc.startswith('SRR') or pacc.startswith('ERR')):
+			layout_list = [l[layout_col] for l in lines[1:] if len(l[run_col]) > 0 and l[run_col] == pacc]
+			run_list = [pacc]
+		else:
+			layout_list = [l[layout_col] for l in lines[1:] if len(l[run_col]) > 0]
 		for i in range(len(layout_list)):
 			if layout_list[i] == "SINGLE":
 				print(run_list[i]+".fastq.gz")

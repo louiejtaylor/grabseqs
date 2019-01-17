@@ -54,6 +54,12 @@ if [ `cat $TMPDIR/test_metadata/SRP057027.tsv | wc -l` -ne 371 ] ; then
 fi
 echo -e "$PASS SRA metadata test passed"
 
+## test behavior with -l and --no_parsing
+if [ `grabseqs sra -l --no_parsing SRR1804203 | wc -l` -ne 1 ]; then
+    exit 1
+fi
+echo -e "$PASS SRA sample listing test with SRR parsing disabled passed"
+
 ## unpaired fasterq-dump
 grabseqs sra -t 2 -o $TMPDIR/test_tiny_sra ERR2279063
 ls $TMPDIR/test_tiny_sra/ERR2279063.fastq.gz > /dev/null
