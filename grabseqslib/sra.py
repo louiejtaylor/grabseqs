@@ -1,6 +1,8 @@
 import requests, argparse, sys, os, time, glob
 from subprocess import call
 
+from grabseqslib.utils import check_existing
+
 def add_sra_subparser(subparser):
 	"""
 	Function to add subparser for SRA data.
@@ -75,28 +77,20 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
 	retcode = 1
 	while retries >= 0:
 		if not force:
-			if loc == '':
-				loc_to_search = os.getcwd()
-			else:
-				loc_to_search = loc
-			try:
-				existing = [f for f in os.listdir(loc_to_search) if f.endswith('fastq.gz')]
-			except FileNotFoundError:
-				existing = []
-			for f in existing:
-				if (acc + '.' in f) or (acc + '_' in f):
-					print("found file: " + f + "  matching " + acc + ", skipping download. Pass -f to force download")
-					skip = True
-					break
+			found = check_existing(loc, acc)
+			if found != False:
+				print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
+				skip = True #prob can remove the whole skip logic
+				break
 		if not skip:
-			if fastqdump:
+			if fastqdump: # use legacy fastq-dump
 				print("downloading " + acc + " using fastq-dump")
 				cmd = ["fastq-dump", "--gzip", "--split-3", "--skip-technical"]
 			else:
 				print("downloading " + acc + " using fasterq-dump")
 				cmd = ["fasterq-dump", "-e", str(threads), "-f", "-3"]
 			if loc != "":
-				cmd = cmd + ['-O', loc]	
+				cmd = cmd + ['-O', loc]
 			cmd = cmd + [acc]
 			retcode = call(cmd)
 			rgzip = 0
@@ -113,6 +107,6 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
 				time.sleep(100) #TODO?: user-modifiable
 				retries -= 1
 			else:
-				raise Exception("download for "+acc+" failed. fasterq-dump returned "+str(retcode)+", pigz returned "+str(rgzip)+".")
+				raise Exception("download for "+acc+" failed. fast(er)q-dump returned "+str(retcode)+", pigz returned "+str(rgzip)+".")
 		else:
 			break

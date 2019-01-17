@@ -4,20 +4,7 @@
 set -e
 export PATH=${PATH}:${HOME}/miniconda3/bin
 
-GREEN="\x1B[32m"
-RESET="\x1B[0m"
-PASS="${GREEN}\u2714${RESET}"
-
-# environment and package install
-conda env update --name=grabseqs-unittest --file environment.yml -q > /dev/null
-source activate grabseqs-unittest
-python setup.py install
-
-# basic tests
-grabseqs -v
-grabseqs -h
-
-# repo grabseqs tests
+# set up temp locations
 TMPLOC=/tmp
 
 while getopts "d:" opt; do
@@ -34,6 +21,25 @@ done
 
 TMPDIR=$TMPLOC/grabseqs_unittest
 mkdir -p $TMPDIR
+fs=`ls $TMPDIR | wc -l`
+
+if [ $fs -ne 0 ] ; then
+    echo "Directory $TMPDIR not empty. Clean it or specify a testing location with -d [loc]"
+    exit 1
+fi
+
+GREEN="\x1B[32m"
+RESET="\x1B[0m"
+PASS="${GREEN}\u2714${RESET}"
+
+# environment and package install
+conda env update --name=grabseqs-unittest --file environment.yml -q > /dev/null
+source activate grabseqs-unittest
+python setup.py install
+
+# basic tests
+grabseqs -v
+grabseqs -h
 
 # SRA
 ## test sample listing, metadata download
@@ -69,6 +75,13 @@ grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra_paired --use_fastq_dump SRR19139
 ls $TMPDIR/test_fastqdump_sra_paired/SRR1913936_1.fastq.gz > /dev/null
 ls $TMPDIR/test_fastqdump_sra_paired/SRR1913936_2.fastq.gz > /dev/null
 echo -e "$PASS SRA paired sample download using fastq-dump test passed"
+
+## test no clobber
+t=`grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra ERR2279063`
+if [[ $t != *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS SRA no-clobber passed"
 
 # MG-RAST
 ## test sample listing

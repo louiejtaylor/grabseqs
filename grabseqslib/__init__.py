@@ -10,7 +10,7 @@ def main():
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.3.4')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.3.5')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	add_sra_subparser(subpa)
@@ -26,13 +26,21 @@ def main():
 	except AttributeError: # No subcommand provided (all subcomands have `-o`)
 		print("Subcommand not specified, run `grabseqs -h` or  `grabseqs sra -h` for help")
 		sys.exit(0)
+
+	# Figure out which subparser to use
 	try:
 		if args.rastid:
-			for rast_proj in args.rastid:
-				target_list = get_mgrast_acc_metadata(rast_proj, args.metadata, args.outdir)
-				for target in target_list:
-					download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
+			repo = "MG-RAST"
 	except AttributeError:
+		repo = "SRA"
+
+	# Download samples!
+	if repo == "MG-RAST":
+		for rast_proj in args.rastid:
+			target_list = get_mgrast_acc_metadata(rast_proj, args.metadata, args.outdir)
+			for target in target_list:
+				download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
+	else:
 		for sra_identifier in args.id:
 			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir, args.list, args.no_SRR_parsing)
 

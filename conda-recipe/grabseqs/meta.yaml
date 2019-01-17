@@ -1,5 +1,5 @@
 {% set name = "grabseqs" %}
-{% set version = "0.3.4" %}
+{% set version = "0.3.5" %}
 
 package:
   name: "{{ name|lower }}"
