@@ -43,3 +43,18 @@ def fetch_file(url, outfile, retries = 0):
 	wget_cmd = ["wget", "-O", outfile, url]
 	retcode = call(wget_cmd)
 	return retcode
+
+def build_paths(acc, loc, paired, ext = ".fastq"):
+	"""
+	Builds paths for saving downloaded files from a given
+	`acc` in a particular `loc`, depending on whether or
+	not they are `paired`. Can specify any `ext`. Returns
+	a list of paths of length 1 or 2.
+	"""
+	if paired:
+		suffix = ["_1", "_2"]
+	else:
+
+		suffix = [""]
+	return [os.path.join(loc,acc+s+ext) for s in suffix]
+	
