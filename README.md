@@ -6,7 +6,7 @@ Utility for simplifying bulk downloading data from next-generation sequencing re
 
 ## Install
 
-Install grabseqs and all dependencies [via conda](https://anaconda.org/louiejtaylor/grabseqs):
+Install grabseqs and all dependencies [via conda](https://conda.io/docs/user-guide/getting-started.html):
 
     conda install -c louiejtaylor -c bioconda grabseqs
 
