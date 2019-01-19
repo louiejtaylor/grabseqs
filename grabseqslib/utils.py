@@ -33,3 +33,13 @@ def check_existing(save_loc, acc):
 		return "unpaired"
 	else:
 		return False
+
+def fetch_file(url, outfile, retries = 0):
+	"""
+	Function to fetch a remote file from a `url`,
+	writing to `outfile` with a particular number of
+	`retries`.
+	"""
+	wget_cmd = ["wget", "-O", outfile, url]
+	retcode = call(wget_cmd)
+	return retcode

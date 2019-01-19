@@ -1,7 +1,7 @@
 import requests, argparse, sys, os, time, json, glob
 from subprocess import call
 
-from grabseqslib.utils import check_existing
+from grabseqslib.utils import check_existing, fetch_file
 
 def add_mgrast_subparser(subparser):
 	"""
@@ -56,7 +56,6 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 	with support for a particular number of `retries`. Can use multiple
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""
-	# mgp8384 is .fastq format! need to handle
 	read_stages = ["050.1", "050.2"] # R1 and R2 (if paired)
 
 	metadata_json = json.loads(requests.get("http://api.metagenomics.anl.gov/download/"+acc).text)
@@ -87,8 +86,8 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 		for i in range(len(fa_paths)):
 			fa_path = fa_paths[i]
 			fq_path = fq_paths[i]
-			wget_cmd = ["wget", "-O", fa_path, "http://api.metagenomics.anl.gov/download/"+acc+"?file="+stages_to_grab[i]]
-			retcode = call(wget_cmd) #TODO: figure out how to parse if not found
+			file_url = "http://api.metagenomics.anl.gov/download/"+acc+"?file="+stages_to_grab[i]
+			retcode = fetch_file(file_url,fa_path,retries)
 			seq = -1
 			result = open(fa_path)
 			first_line = result.readline()
