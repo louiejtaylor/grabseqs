@@ -73,11 +73,14 @@ def download_XYZ_sample(acc, retries = 0, threads = 1, loc='', force=False, list
 			print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
 			return False
 
+	# Need to know this
+	paired = True
+
 	# Generally, unless there's a tool like fasterq-dump that downloads both reads,
 	# it's just easier to iterate through file paths (i.e. either one unpaired, or
 	# two paired).
 	seq_urls = []
-	file_paths = [] #TBA: I should write a function to generate these
+	file_paths = build_paths(acc, loc, paired) #see utils.py for details
 
 	for i in range(len(seq_urls)):
 		print("Downloading accession "+acc+" from XYZ repository")
