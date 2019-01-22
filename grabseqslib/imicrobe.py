@@ -5,37 +5,41 @@ from subprocess import call
 
 from grabseqslib.utils import check_existing, fetch_file
 
-def add_XYZ_subparser(subparser):
+def add_imicrobe_subparser(subparser):
 	"""
-	Function to add a subparser for XYZ repository.
+	Function to add a subparser for the iMicrobe repository.
 	"""
 
 	### Base args: should be in every
-	parser_XYZ = subparser.add_parser('XYZ', help="download from XYZ")
-	parser_XYZ.add_argument('XYZid', type=str, nargs='+', 
-				help="One or more XYZ project or sample identifiers (EXAMPLE####)")
+	parser_imicrobe = subparser.add_parser('imicrobe', help="download from iMicrobe. iMicrobe sample \
+					  and project numbers are ambiguous (both are consecutive \
+					  integers)--please prefix project numbers with 'p', and \
+					  sample numbers with 's'.")
 
-	parser_XYZ.add_argument('-o', dest="outdir", type=str, default="",
+	parser_imicrobe.add_argument('imicrobeid', type=str, nargs='+', 
+				help="One or more iMicrobe project or sample identifiers (p##/s###)")
+
+	parser_imicrobe.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
-	parser_XYZ.add_argument('-r',dest="retries", type=int, default=0,
+	parser_imicrobe.add_argument('-r',dest="retries", type=int, default=0,
 				help="number of times to retry download")
-	parser_XYZ.add_argument('-t',dest="threads", type=int, default=1,
+	parser_imicrobe.add_argument('-t',dest="threads", type=int, default=1,
 				help="threads to use (for pigz)")
 
-	parser_XYZ.add_argument('-f', dest="force", action="store_true",
+	parser_imicrobe.add_argument('-f', dest="force", action="store_true",
 				help = "force re-download of files")
-	parser_XYZ.add_argument('-l', dest="list", action="store_true",
+	parser_imicrobe.add_argument('-l', dest="list", action="store_true",
 				help="list (but do not download) samples to be grabbed")
 
 	### OPTIONAL: Use if metadata are available
-	parser_XYZ.add_argument('-m', dest="metadata", action="store_true",
+	parser_imicrobe.add_argument('-m', dest="metadata", action="store_true",
 				help="save metadata")
 
 	### Add any repository-specific arguments here
 
-def get_XYZ_acc_metadata(pacc, save = False, loc = ''):
+def get_imicrobe_acc_metadata(pacc, save = False, loc = ''):
 	"""
-	Function to get list of XYZ sample accession numbers from a particular 
+	Function to get list of iMicrobe sample accession numbers from a particular 
 	project. Takes project accession number `pacc` and returns a list of XYZ
 	accession numbers. Optional arguments to `save` metadata .csv in a specified
 	`loc`ation.
@@ -54,9 +58,9 @@ def get_XYZ_acc_metadata(pacc, save = False, loc = ''):
 
 	return sample_list
 
-def download_XYZ_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False):
+def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False):
 	"""
-	Helper function to download sequences given an XYZ `acc`ession,
+	Helper function to download sequences given an iMicrobe `acc`ession,
 	with support for a particular number of `retries`. Can use multiple
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""

@@ -1,6 +1,6 @@
 # grabseqs
 
-Utility for simplifying bulk downloading data from next-generation sequencing repositories, like [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra/) or [MG-RAST](http://www.mg-rast.org/).
+Utility for simplifying bulk downloading data from next-generation sequencing repositories, like [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra/), [MG-RAST](http://www.mg-rast.org/), and [iMicrobe](https://www.imicrobe.us/).
 
 [![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=shield)](https://circleci.com/gh/louiejtaylor/grabseqs)
 
@@ -22,11 +22,7 @@ Download all samples from a single SRA Project:
 
     grabseqs sra SRP#######
     
-Download a collection of runs individually:
-
-    grabseqs sra SRR######## SRR######## SRR########
-    
-Or any combination of the above:
+Or any combination of projects (S/ERP), runs (S/ERR), BioProjects (PRJNA):
 
     grabseqs sra SRR######## ERP####### PRJNA######## ERR########
 
