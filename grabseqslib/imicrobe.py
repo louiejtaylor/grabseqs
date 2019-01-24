@@ -137,7 +137,7 @@ def _parse_imicrobe_readpath(acc):
 	file_links = list(r.html.links)
 	# Find one or two links immediately followed by "Reads column (or equivalent)
 	reads_colnames = ["Reads","Reads FASTQ", "upload.fastq"]
-	
+
 	for c in reads_colnames:
 		hits = [m.start() for m in re.finditer("<td>"+c+"</td>", r.html.html)]
 		if len(hits) > 0:
@@ -145,7 +145,7 @@ def _parse_imicrobe_readpath(acc):
 	link_indices = [r.html.html.index('"'+l+'"') for l in file_links]
 	read_links = {}
 	for j in range(len(hits)):
-		read_links[j+1] = file_links[_closest_below_index(link_indices, hits[j])]
+		read_links[j+1] = file_links[_closest_below_index(link_indices, hits[j])].replace("http://datacommons.cyverse.org/browse", "https://de.cyverse.org/anon-files")
 
 	return read_links
 
