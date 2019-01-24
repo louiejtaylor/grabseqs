@@ -9,4 +9,3 @@ dependencies:
   - argparse
   - pigz
   - wget
-  - libxtst-cos6-x86_64
