@@ -1,4 +1,4 @@
-__all__ = ["sra","mgrast"]
+__all__ = ["utils","sra","mgrast","imicrobe"]
 
 import os, sys, argparse
 
@@ -11,7 +11,7 @@ def main():
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
-	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.3.5')
+	parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.4.0')
 	subpa = parser.add_subparsers(help='repositories available')
 
 	add_sra_subparser(subpa)
@@ -48,7 +48,7 @@ def main():
 				download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
 	elif repo == "iMicrobe":
 		for imicrobe_identifier in args.imicrobeid:
-			target_list = get_imicrobe_acc_metadata(imicrobe_identifier, args.metadata, args.outdir)
+			target_list = get_imicrobe_acc_metadata(imicrobe_identifier)
 			for target in target_list:
 				download_imicrobe_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
 	else:

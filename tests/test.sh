@@ -41,7 +41,10 @@ python setup.py install
 grabseqs -v
 grabseqs -h
 
+#####
 # SRA
+#####
+
 ## test sample listing, metadata download
 if [ `grabseqs sra -m -l -o $TMPDIR/test_metadata/ SRP057027 | wc -l` -ne 369 ]; then
     exit 1
@@ -97,7 +100,27 @@ if [[ $tf == *"Pass -f to force download"* ]] ; then
 fi
 echo -e "$PASS SRA force download test passed"
 
+##########
+# iMicrobe
+##########
+
+## test sample listing
+if [ `grabseqs imicrobe -l p17 | wc -l` -ne 2 ]; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe sample listing test passed"
+
+## paired sample listing
+ps=`grabseqs imicrobe -l s6398`
+if [ "$ps" != "s6398_1.fastq.gz,s6398_2.fastq.gz" ]; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe single-sample listing test passed"
+
+#########
 # MG-RAST
+#########
+
 ## test sample listing
 if [ `grabseqs mgrast -l mgp8384 | wc -l` -ne 12 ]; then
     exit 1

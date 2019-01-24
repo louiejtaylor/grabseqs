@@ -1,5 +1,6 @@
 import os, glob
 from subprocess import call
+from requests_html import HTMLSession
 
 def check_existing(save_loc, acc):
 	"""
@@ -57,4 +58,4 @@ def build_paths(acc, loc, paired, ext = ".fastq"):
 
 		suffix = [""]
 	return [os.path.join(loc,acc+s+ext) for s in suffix]
-	
+
