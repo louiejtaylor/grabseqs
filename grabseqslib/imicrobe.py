@@ -2,7 +2,7 @@ import requests, argparse, sys, os, time, json, glob, re
 from subprocess import call
 from requests_html import HTMLSession
 
-from grabseqslib.utils import check_existing, fetch_file
+from grabseqslib.utils import check_existing, fetch_file, build_paths
 
 def add_imicrobe_subparser(subparser):
 	"""
@@ -84,8 +84,10 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 	d_n = len(download_paths.keys())
 	if d_n == 1:
 		fext = [""]
+		paired = False
 	elif d_n == 2:
 		fext = ["_1", "_2"]
+		paired = True
 	elif d_n == 0:
 		raise Exception("No reads found for sample #: "+acc+". Check https://www.imicrobe.us/#/samples/"+acc[1:]+" to confirm that it exists, and open an issue if existing reads were not found.")
 	else:
@@ -101,25 +103,21 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 			print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
 			return False
 
-	# Need to know this
-	paired = True
-
 	# Generally, unless there's a tool like fasterq-dump that downloads both reads,
 	# it's just easier to iterate through file paths (i.e. either one unpaired, or
 	# two paired).
-	seq_urls = []
 	file_paths = build_paths(acc, loc, paired) #see utils.py for details
 
-	for i in range(len(seq_urls)):
+	for i in list(sorted(download_paths.keys())):
 		print("Downloading sample "+acc+" from iMicrobe")
 		# fetch_file should work for most things where a URL is available
-		#retcode = fetch_file(seq_urls[i],file_paths[i],retries)
+		retcode = fetch_file(download_paths[i],file_paths[i-1],retries)
 
 		# There are a number of things you may want to do here: check and handle
 		# downloaded file integrity, convert to .fastq (see mgrast.py for an example
 		# of a scenario dealing with .fastx in general), retries, etc.
 
-		print("Compressing .fastq")
+		#print("Compressing .fastq")
 		#rzip = call(["pigz -f -p "+ str(threads) + ' ' + file_paths[i]], shell=True)
 
 	return True
