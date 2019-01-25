@@ -2,7 +2,7 @@ import requests, argparse, sys, os, time, json, glob, re
 from subprocess import call
 from requests_html import HTMLSession
 
-from grabseqslib.utils import check_existing, fetch_file, build_paths
+from grabseqslib.utils import check_existing, fetch_file, build_paths, check_filetype, fasta_to_fastq
 
 def add_imicrobe_subparser(subparser):
 	"""
@@ -106,20 +106,38 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 	# Generally, unless there's a tool like fasterq-dump that downloads both reads,
 	# it's just easier to iterate through file paths (i.e. either one unpaired, or
 	# two paired).
-	file_paths = build_paths(acc, loc, paired) #see utils.py for details
+
+	fx_paths = build_paths(acc, loc, paired, ".fastx")
+	fq_paths = build_paths(acc, loc, paired)
 
 	for i in list(sorted(download_paths.keys())):
 		print("Downloading sample "+acc+" from iMicrobe")
 		# fetch_file should work for most things where a URL is available
-		retcode = fetch_file(download_paths[i],file_paths[i-1],retries)
-
+		fx_path = fx_paths[i-1]
+		fq_path = fq_paths[i-1]
+		retcode = fetch_file(download_paths[i],fx_path,retries)
+		
 		# There are a number of things you may want to do here: check and handle
 		# downloaded file integrity, convert to .fastq (see mgrast.py for an example
 		# of a scenario dealing with .fastx in general), retries, etc.
+		ftype = check_filetype(fx_path)
+		gzipped = ftype.endswith('.gz')
 
-		#print("Compressing .fastq")
-		#rzip = call(["pigz -f -p "+ str(threads) + ' ' + file_paths[i]], shell=True)
-
+		if ftype.startswith("fasta"):
+			print("Converting .fasta to .fastq (adding dummy quality scores), compressing")
+			fasta_to_fastq(fx_path, fq_path, gzipped)
+			retcode = call(["rm "+fx_path], shell=True) # get rid of old fasta
+			rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+		elif ftype.startswith("fastq"):
+			if gzipped:
+				print("downloaded file in .fastq.gz format already!")
+				call(["mv", fx_path, fq_path+".gz"])
+			else:
+				print("downloaded file in .fastq format already, compressing .fastq")
+				call(["mv", fx_path, fq_path])
+				rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+		else:
+			print("requested sample "+acc+" does not appear to be in .fasta or .fastq format.")
 	return True
 
 def _parse_imicrobe_readpath(acc):
