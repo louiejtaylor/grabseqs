@@ -5,5 +5,6 @@ channels:
 dependencies:
   - sra-tools>2.9
   - python>3.5
+  - requests
   - pigz
   - wget
