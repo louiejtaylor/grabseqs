@@ -73,6 +73,14 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""
 
+	# Make sure to check that the sample isn't already downloaded
+	if not force:
+		found = check_existing(loc, acc)
+		if found != False:
+			print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
+			return False
+
+
 	# LISTING OPTION 2: If the information about whether samples are paired or
 	# unpaired is only available from a sample-specific page, it usually makes more
 	# sense to look that up here, and then just skip the downloading part. For an
@@ -96,13 +104,6 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 		print(','.join([acc+ext+".fastq.gz" for ext in fext]))
 		return False
 
-	# Make sure to check that the sample isn't already downloaded
-	if not force:
-		found = check_existing(loc, acc)
-		if found != False:
-			print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
-			return False
-
 	# Generally, unless there's a tool like fasterq-dump that downloads both reads,
 	# it's just easier to iterate through file paths (i.e. either one unpaired, or
 	# two paired).
@@ -116,7 +117,7 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 		fx_path = fx_paths[i-1]
 		fq_path = fq_paths[i-1]
 		retcode = fetch_file(download_paths[i],fx_path,retries)
-		
+
 		# There are a number of things you may want to do here: check and handle
 		# downloaded file integrity, convert to .fastq (see mgrast.py for an example
 		# of a scenario dealing with .fastx in general), retries, etc.
@@ -149,20 +150,26 @@ def _parse_imicrobe_readpath(acc):
 	acc = str(acc)
 	session = HTMLSession()
 	r = session.get('https://www.imicrobe.us/#/samples/'+acc)
-	r.html.render(scrolldown=2, sleep=3)
+	r.html.render(scrolldown=4, sleep=4)
 	file_links = list(r.html.links)
 	# Find one or two links immediately followed by "Reads column (or equivalent)
-	reads_colnames = ["Reads","Reads FASTQ", "upload.fastq"]
+	reads_colnames = ["Reads FASTQ", "Reads", "FASTQ", "upload.fastq"]
 
 	for c in reads_colnames:
 		hits = [m.start() for m in re.finditer("<td>"+c+"</td>", r.html.html)]
 		if len(hits) > 0:
 			break
-	link_indices = [r.html.html.index('"'+l+'"') for l in file_links]
+	link_indices = []
+	working_file_links = []
+	for l in file_links:
+		try:
+			link_indices.append(r.html.html.index('"'+l+'"'))
+			working_file_links.append(l)
+		except ValueError: # sometimes they are formatted differently (if added by the project owner?)
+			continue
 	read_links = {}
 	for j in range(len(hits)):
-		read_links[j+1] = file_links[_closest_below_index(link_indices, hits[j])].replace("http://datacommons.cyverse.org/browse", "https://de.cyverse.org/anon-files")
-
+		read_links[j+1] = working_file_links[_closest_below_index(link_indices, hits[j])].replace("http://datacommons.cyverse.org/browse", "https://de.cyverse.org/anon-files")
 	return read_links
 
 def _closest_below_index(l,n):
