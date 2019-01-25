@@ -69,8 +69,9 @@ def check_filetype(fp):
 	"""
 	try:
 		f = gzip.open(fp)
-		first = f.readline()
+		first_b = f.readline()
 		gz = ".gz"
+		first = first_b.decode("ascii")
 	except OSError: # file not gzipped
 		f.close()
 		f = open(fp, 'r')
