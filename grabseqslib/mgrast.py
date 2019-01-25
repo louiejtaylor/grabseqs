@@ -1,7 +1,7 @@
 import requests, argparse, sys, os, time, json, glob
 from subprocess import call
 
-from grabseqslib.utils import check_existing, fetch_file
+from grabseqslib.utils import check_existing, fetch_file, check_filetype, fasta_to_fastq
 
 def add_mgrast_subparser(subparser):
 	"""
@@ -47,7 +47,7 @@ def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
 		f.write(str(metadata_json))
 		f.close()
 		#TODO: Save metadata detail
-		
+
 	return sample_list
 
 def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False):
@@ -80,46 +80,29 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 			if found != False:
 				print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
 				return False
+
 		fa_paths = [os.path.join(loc,acc+ext+".fasta") for ext in fext]
 		fq_paths = [os.path.join(loc,acc+ext+".fastq") for ext in fext]
-	
+
 		for i in range(len(fa_paths)):
 			fa_path = fa_paths[i]
 			fq_path = fq_paths[i]
 			file_url = "http://api.metagenomics.anl.gov/download/"+acc+"?file="+stages_to_grab[i]
 			retcode = fetch_file(file_url,fa_path,retries)
-			seq = -1
-			result = open(fa_path)
-			first_line = result.readline()
-			result.close()
-			if len(first_line) == 0:
-				raise Exception("No reads available for accession: "+acc)
-			if first_line[0] == ">":
-				fq = open(fq_path, 'w')
-				print("Converting .fasta to .fastq (adding dummy quality scores)")
-				with open(fa_path) as f: # convert .fasta to .fastq
-					for line in f:
-						if line[0] == '>':
-							if seq == -1:
-								fq.write('@'+line[1:])
-							else:
-								fq.write(seq+'\n')
-								fq.write('+\n')	
-								fq.write('I'*len(seq)+'\n')
-								fq.write('@'+line[1:])
-							seq = ''
-						else:
-							seq += line.strip()
-				if len(seq) > 0:
-					fq.write(seq+'\n')
-					fq.write('+\n')
-					fq.write('I'*len(seq)+'\n')
-				fq.close()
+			ftype = check_filetype(fa_path)
+			gzipped = ftype.endswith('.gz')
+			if ftype.startswith("fasta"):
+				print("Converting .fasta to .fastq (adding dummy quality scores), compressing")
+				fasta_to_fastq(fa_path, fq_path, gzipped)
 				retcode = call(["rm "+fa_path], shell=True) # get rid of old fasta
-			elif first_line[0] == "@":
-				print("downloaded file in .fastq format already")
-				call(["mv", fa_path, fq_path])
+				rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+			elif ftype.startswith("fastq"):
+				if gzipped:
+					print("downloaded file in .fastq.gz format already!")
+					call(["mv", fa_path, fq_path+".gz"])
+				else:
+					print("downloaded file in .fastq format already, compressing .fastq")
+					call(["mv", fa_path, fq_path])
+					rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
 			else:
 				print("requested sample "+acc+" does not appear to be in .fasta or .fastq format. This may be because it is not publically accessible from MG-RAST.")
-			print("Compressing .fastq")
-			rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)

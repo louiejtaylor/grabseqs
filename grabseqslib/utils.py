@@ -1,4 +1,4 @@
-import os, glob
+import os, glob, gzip
 from subprocess import call
 from requests_html import HTMLSession
 
@@ -58,4 +58,68 @@ def build_paths(acc, loc, paired, ext = ".fastq"):
 
 		suffix = [""]
 	return [os.path.join(loc,acc+s+ext) for s in suffix]
+
+def check_filetype(fp):
+	"""
+	Function to classify downloaded files as gzipped or not,
+	and in FASTQ, FASTA, or not based on contents. Returns a 
+	formatted extension (i.e. '.fastq', 'fasta.gz') corresponding
+	to the filetype or an empty string if the filetype is not 
+	recognized.
+	"""
+	try:
+		f = gzip.open(fp)
+		first = f.readline()
+		gz = ".gz"
+	except OSError: # file not gzipped
+		f.close()
+		f = open(fp, 'r')
+		first = f.readline()
+		f.close()
+		gz = ""
+	if len(first) == 0:
+		return ""
+	if first[0] == ">":
+		return "fasta"+gz
+	elif first[0] == "@":
+		return "fastq"+gz
+	else:
+		return ""
+
+def fasta_to_fastq(fp_fa, fp_fq, zipped, dummy_char = "I"):
+	"""
+	Function to convert fasta (at `fp_fa`) to fastq (at `fp_fq`)
+	possibly zipped, adding a `dummy_score`.
+	"""
+	if len(dummy_char) != 1:
+		raise Exception("FASTQ dummy quality char must be only one char.")
+
+	fq = open(fp_fq, 'w')
+
+	seq = -1
+	if zipped:
+		f = gzip(fp_fa)
+	else:
+		f = open(fp_fa)
+	for line in f.readlines():
+		if line[0] == '>':
+			if seq == -1:
+				fq.write('@'+line[1:])
+			else:
+				fq.write(seq+'\n')
+				fq.write('+\n')	
+				fq.write(dummy_char*len(seq)+'\n')
+				fq.write('@'+line[1:])
+			seq = ''
+		else:
+			seq += line.strip()
+
+	f.close()
+
+	if len(seq) > 0:
+		fq.write(seq+'\n')
+		fq.write('+\n')
+		fq.write(dummy_char*len(seq)+'\n')
+
+	fq.close()
 

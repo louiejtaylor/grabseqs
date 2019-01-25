@@ -35,7 +35,7 @@ PASS="${GREEN}\u2714${RESET}"
 # environment and package install
 conda env update --name=grabseqs-unittest --file environment.yml -q > /dev/null
 source activate grabseqs-unittest
-python setup.py install
+python setup.py install -q
 
 # basic tests
 grabseqs -v
@@ -122,15 +122,20 @@ echo -e "$PASS iMicrobe single-sample listing test passed"
 #########
 
 ## test sample listing
-if [ `grabseqs mgrast -l mgp8384 | wc -l` -ne 12 ]; then
+if [ `grabseqs mgrast -l mgp85479 | wc -l` -ne 4 ]; then
     exit 1
 fi
 echo -e "$PASS MG-RAST sample listing test passed"
 
-## download a tiny sample
+## download a tiny sample, .fastq-formatted
 grabseqs mgrast -o $TMPDIR/test_tiny_mg mgm4793571.3
 ls $TMPDIR/test_tiny_mg/mgm4793571.3.fastq.gz > /dev/null
-echo -e "$PASS MG-RAST unpaired sample download test passed"
+echo -e "$PASS MG-RAST unpaired sample download test passed (fastq-formatted)"
+
+## download a tiny sample, .fasta-formatted
+grabseqs mgrast -o $TMPDIR/test_tiny_mg_fasta mgm4633450.3
+ls $TMPDIR/test_tiny_mg_fasta/mgm4633450.3.fastq.gz > /dev/null
+echo -e "$PASS MG-RAST fasta-formatted sample download test passed"
 
 ## test no clobber
 u=`grabseqs mgrast -o $TMPDIR/test_tiny_mg mgm4793571.3`
