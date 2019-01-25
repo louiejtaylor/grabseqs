@@ -35,13 +35,16 @@ PASS="${GREEN}\u2714${RESET}"
 # environment and package install
 conda env update --name=grabseqs-unittest --file environment.yml -q > /dev/null
 source activate grabseqs-unittest
-python setup.py install
+python setup.py install -q
 
 # basic tests
 grabseqs -v
 grabseqs -h
 
+#####
 # SRA
+#####
+
 ## test sample listing, metadata download
 if [ `grabseqs sra -m -l -o $TMPDIR/test_metadata/ SRP057027 | wc -l` -ne 369 ]; then
     exit 1
@@ -97,17 +100,69 @@ if [[ $tf == *"Pass -f to force download"* ]] ; then
 fi
 echo -e "$PASS SRA force download test passed"
 
-# MG-RAST
+##########
+# iMicrobe
+##########
+
 ## test sample listing
-if [ `grabseqs mgrast -l mgp8384 | wc -l` -ne 12 ]; then
+if [ `grabseqs imicrobe -l p17 | wc -l` -ne 2 ]; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe sample listing test passed"
+
+## paired sample listing
+ps=`grabseqs imicrobe -l s6398`
+if [ "$ps" != "s6398_1.fastq.gz,s6398_2.fastq.gz" ]; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe single-sample listing test passed"
+
+## download a tiny sample, .fasta-formatted
+grabseqs imicrobe -o $TMPDIR/test_tiny_im s710
+ls $TMPDIR/test_tiny_im/s710.fastq.gz  > /dev/null
+echo -e "PASS iMicrobe fasta-formatted sample download test passed"
+
+## download a tiny sample, .fastq-formatted paired
+grabseqs imicrobe -o $TMPDIR/test_tiny_im s6399
+ls $TMPDIR/test_tiny_im/s6399_1.fastq.gz  > /dev/null
+ls $TMPDIR/test_tiny_im/s6399_2.fastq.gz  > /dev/null
+echo -e "PASS iMicrobe fastq-formatted sample download test passed"
+
+## test no clobber
+t=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im s710`
+echo $t
+if [[ $t != *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe no-clobber test passed"
+
+## test force
+tf=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im -f s710`
+if [[ $tf == *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe force download test passed"
+
+
+#########
+# MG-RAST
+#########
+
+## test sample listing
+if [ `grabseqs mgrast -l mgp85479 | wc -l` -ne 4 ]; then
     exit 1
 fi
 echo -e "$PASS MG-RAST sample listing test passed"
 
-## download a tiny sample
+## download a tiny sample, .fastq-formatted
 grabseqs mgrast -o $TMPDIR/test_tiny_mg mgm4793571.3
 ls $TMPDIR/test_tiny_mg/mgm4793571.3.fastq.gz > /dev/null
-echo -e "$PASS MG-RAST unpaired sample download test passed"
+echo -e "$PASS MG-RAST unpaired sample download test passed (fastq-formatted)"
+
+## download a tiny sample, .fasta-formatted
+grabseqs mgrast -o $TMPDIR/test_tiny_mg_fasta mgm4633450.3
+ls $TMPDIR/test_tiny_mg_fasta/mgm4633450.3.fastq.gz > /dev/null
+echo -e "$PASS MG-RAST fasta-formatted sample download test passed"
 
 ## test no clobber
 u=`grabseqs mgrast -o $TMPDIR/test_tiny_mg mgm4793571.3`
