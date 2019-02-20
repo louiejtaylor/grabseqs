@@ -14,7 +14,7 @@ Or with pip (and install the [dependencies](https://github.com/louiejtaylor/grab
 
     pip install grabseqs
     
-If you're going to be using SRA data, run `vdb-config -i` and turn off local file caching unless you want extra copies of the downloaded sequences taking up space ([read more here](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration)).
+If you're going to be using SRA data, after you've installed sra-tools, run `vdb-config -i` and turn off local file caching unless you want extra copies of the downloaded sequences taking up space ([read more here](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration)).
 
 ## Quick start
 
