@@ -7,7 +7,6 @@ from grabseqslib.imicrobe import get_imicrobe_acc_metadata, download_imicrobe_sa
 from grabseqslib.mgrast import get_mgrast_acc_metadata, download_mgrast_sample, add_mgrast_subparser
 
 def main():
-
 	# Top-level parser
 	parser = argparse.ArgumentParser(prog="grabseqs",
 		 description='Download metagenomic sequences from public datasets.')
@@ -53,7 +52,7 @@ def main():
 				download_imicrobe_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
 	else:
 		for sra_identifier in args.id:
-			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir, args.list, args.no_SRR_parsing)
+			acclist = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir, args.list, not args.SRR_parsing)
 
 			for acc in acclist:
 				run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force, args.fastqdump)

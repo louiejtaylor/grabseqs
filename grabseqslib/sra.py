@@ -24,13 +24,15 @@ def add_sra_subparser(subparser):
 				help="list (but do not download) samples to be grabbed")
 	parser_sra.add_argument('-m', dest="metadata", action="store_true",
 				help="save SRA metadata")
-	parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true",
-				help="do not parse SRR/ERR (pass straight to fasterq-dump)")
+	parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true", # LEGACY: this will be removed in the
+				help="Legacy option to not parse SRR IDs (now default)")    # next major version as this is now default.
+	parser_sra.add_argument('--parse_run_ids', dest="SRR_parsing", action="store_true", 
+                                help="parse SRR/ERR identifers (do not pass straight to fasterq-dump)")
 	parser_sra.add_argument("--use_fastq_dump", dest="fastqdump", action="store_true",
 				help="use legacy fastq-dump instead of fasterq-dump (no multithreaded downloading)")
 
 
-def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR_parsing = False):
+def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR_parsing = True):
 	"""
 	Function to get list of SRA accession numbers from a particular project.
 	Takes project accession number `pacc` and returns a list of SRA 
