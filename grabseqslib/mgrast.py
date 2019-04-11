@@ -14,7 +14,7 @@ def add_mgrast_subparser(subparser):
 				help="One or more MG-RAST project or sample identifiers (mgp####/mgm######)")
 
 	parser_rast.add_argument('-m', dest="metadata", type=str, default="",
-				help="filename in which to save metadata (relative to OUTDIR)")
+				help="filename in which to save metadata (.csv format, relative to OUTDIR)")
 	parser_rast.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_rast.add_argument('-r',dest="retries", type=int, default=0,

@@ -46,7 +46,7 @@ grabseqs -h
 #####
 
 ## test sample listing, metadata download
-if [ `grabseqs sra -m -l -o $TMPDIR/test_metadata/ SRP057027 | wc -l` -ne 369 ]; then
+if [ `grabseqs sra -m SRP057027.tsv -l -o $TMPDIR/test_metadata/ SRP057027 | wc -l` -ne 369 ]; then
     exit 1
 fi
 echo -e "$PASS SRA sample listing test passed"
@@ -103,6 +103,7 @@ echo -e "$PASS SRA force download test passed"
 ##########
 # iMicrobe
 ##########
+## TODO: Metadata test
 
 ## test sample listing
 #if [ `grabseqs imicrobe -l p17 | wc -l` -ne 2 ]; then
@@ -147,6 +148,7 @@ echo -e "$PASS SRA force download test passed"
 #########
 # MG-RAST
 #########
+## TODO: Metadata test
 
 ## test sample listing
 if [ `grabseqs mgrast -l mgp85479 | wc -l` -ne 4 ]; then

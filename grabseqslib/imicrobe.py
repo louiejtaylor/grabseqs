@@ -17,7 +17,7 @@ def add_imicrobe_subparser(subparser):
 				help="One or more iMicrobe project or sample identifiers (p##/s###)")
 
 	parser_imicrobe.add_argument('-m', dest="metadata", type=str, default="",
-				help="filename in which to save metadata (relative to OUTDIR)")
+				help="filename in which to save metadata (.csv format, relative to OUTDIR)")
 	parser_imicrobe.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_imicrobe.add_argument('-r',dest="retries", type=int, default=0,

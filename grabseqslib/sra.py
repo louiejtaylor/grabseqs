@@ -13,7 +13,7 @@ def add_sra_subparser(subparser):
 				help="One or more BioProject, ERR/SRR or ERP/SRP number(s)")
 
 	parser_sra.add_argument('-m', dest="metadata", type=str, default="",
-				help="filename in which to save SRA metadata (relative to OUTDIR)")
+				help="filename in which to save SRA metadata (.csv format, relative to OUTDIR)")
 	parser_sra.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_sra.add_argument('-r',dest="retries", type=int, default=2,
