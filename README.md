@@ -34,9 +34,9 @@ Similar syntax works for MG-RAST:
 
 Fun options:
 
-    grabseqs sra -t 10 -m -o data/ -r 3 SRP#######
+    grabseqs sra -t 10 -m metadata.csv -o proj/ -r 3 SRP#######
 
-(translation: use 10 threads, save metadata, download to the dir `data/`, retry failed downloads 3x, get all samples from SRP#######)
+(translation: use 10 threads, save metadata to `proj/metadata.csv`, download to the dir `proj/`, retry failed downloads 3x, get all samples from SRP#######)
     
 If you'd like to do a dry run and just get a list of samples that will be downloaded, pass `-l`:
     
@@ -45,45 +45,46 @@ If you'd like to do a dry run and just get a list of samples that will be downlo
 
 Full usage:
 
-    usage: grabseqs sra [-h] [-o OUTDIR] [-r RETRIES] [-t THREADS] [-f] [-l] [-m]
-                        id [id ...]
-                        
+    grabseqs sra [-h] [-m METADATA] [-o OUTDIR] [-r RETRIES] [-t THREADS]
+                 [-f] [-l] [--no_parsing] [--parse_run_ids]
+                 [--use_fastq_dump]
+                 id [id ...]
+
     positional arguments:
-      id          One or more BioProject, ERR/SRR or ERP/SRP number(s)
-      
+      id                One or more BioProject, ERR/SRR or ERP/SRP number(s)
+
     optional arguments:
       -h, --help        show this help message and exit
-      -o OUTDIR         directory in which to save output. created if it doesn't exist
+      -m METADATA       filename in which to save SRA metadata (.csv format,
+                        relative to OUTDIR)
+      -o OUTDIR         directory in which to save output. created if it doesn't
+                        exist
       -r RETRIES        number of times to retry download
       -t THREADS        threads to use (for fasterq-dump/pigz)
       -f                force re-download of files
       -l                list (but do not download) samples to be grabbed
-      -m                save SRA metadata
-      --no_parsing      do not parse SRR/ERR (pass straight to fasterq-dump)
+      --parse_run_ids   parse SRR/ERR identifers (do not pass straight to fasterq-
+                        dump)
       --use_fastq_dump  use legacy fastq-dump instead of fasterq-dump (no
                         multithreaded downloading)
- 
-Downloads .fastq.gz files to `OUTDIR` (or the working directory if not specified). If the `-m` flag is passed, saves metadata to `OUTDIR`.
+      
+Downloads .fastq.gz files to `OUTDIR` (or the working directory if not specified). If the `-m` flag is passed, saves metadata to `OUTDIR` with filename `METADATA` in csv format.
 
 Similar options are available for downloading from MG-RAST:
 
-    usage: grabseqs mgrast [-h] [-o OUTDIR] [-r RETRIES] [-t THREADS] [-f] [-l]
-                           [-m] rastid [rastid ...]
-    positional arguments:
-      rastid      One or more MG-RAST project or sample identifiers (mgp####/mgm######)
+    grabseqs mgrast [-h] [-m METADATA] [-o OUTDIR] [-r RETRIES]
+                    [-t THREADS] [-f] [-l]
+                    rastid [rastid ...]
 
-    optional arguments:
-      -h, --help  show this help message and exit
-      -o OUTDIR   directory in which to save output. created if it doesn't exist
-      -r RETRIES  number of times to retry download
-      -t THREADS  threads to use (for pigz)
-      -f          force re-download of files
-      -l          list (but do not download) samples to be grabbed
-      -m          save metadata
+And iMicrobe:
+
+    grabseqs imicrobe [-h] [-m METADATA] [-o OUTDIR] [-r RETRIES]
+                      [-t THREADS] [-f] [-l]
+                      imicrobeid [imicrobeid ...]
 
 ## Dependencies
   
-   - Python 3 (argparse, requests, subprocess)
+   - Python 3 (argparse, requests, subprocess, pandas)
    - sra-tools>2.9
    - pigz
    - wget

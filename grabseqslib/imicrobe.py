@@ -1,7 +1,8 @@
 import requests, argparse, sys, os, time, json, glob, re
+import pandas as pd
+from io import StringIO
 from subprocess import call
 from requests_html import HTMLSession
-
 from grabseqslib.utils import check_existing, fetch_file, build_paths, check_filetype, fasta_to_fastq
 
 def add_imicrobe_subparser(subparser):
@@ -15,6 +16,8 @@ def add_imicrobe_subparser(subparser):
 	parser_imicrobe.add_argument('imicrobeid', type=str, nargs='+', 
 				help="One or more iMicrobe project or sample identifiers (p##/s###)")
 
+	parser_imicrobe.add_argument('-m', dest="metadata", type=str, default="",
+				help="filename in which to save metadata (.csv format, relative to OUTDIR)")
 	parser_imicrobe.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_imicrobe.add_argument('-r',dest="retries", type=int, default=0,
@@ -27,18 +30,12 @@ def add_imicrobe_subparser(subparser):
 	parser_imicrobe.add_argument('-l', dest="list", action="store_true",
 				help="list (but do not download) samples to be grabbed")
 
-	### OPTIONAL: Use if metadata are available
-	parser_imicrobe.add_argument('-m', dest="metadata", action="store_true",
-				help="save metadata")
-
-
 def get_imicrobe_acc_metadata(pacc):
 	"""
 	Function to get list of iMicrobe sample accession numbers from a particular
 	project. Takes project accession number `pacc` and returns a list of iMicrobe
 	accession numbers.
 	"""
-
 	# Check accession format
 	pacc = pacc.lower()
 	if pacc.startswith("p"):
@@ -66,20 +63,12 @@ def get_imicrobe_acc_metadata(pacc):
 	# Format and return sample accession numbers
 	return ["s"+ sID for sID in sample_list]
 
-def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False):
+def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False, download_metadata=False, metadata_agg = None):
 	"""
 	Helper function to download sequences given an iMicrobe `acc`ession,
 	with support for a particular number of `retries`. Can use multiple
 	`threads` with pigz (if data are not already compressed on arrival).
 	"""
-
-	# Make sure to check that the sample isn't already downloaded
-	if not force:
-		found = check_existing(loc, acc)
-		if found != False:
-			print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
-			return False
-
 
 	# LISTING OPTION 2: If the information about whether samples are paired or
 	# unpaired is only available from a sample-specific page, it usually makes more
@@ -88,7 +77,7 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 	if not acc.startswith("s"):
 		raise Exception("iMicrobe sample accession numbers should be prefixed with 's'")
 
-	download_paths = _parse_imicrobe_readpath(acc[1:]) # get paths
+	download_paths, metadata_agg = _parse_imicrobe_readpath_metadata(acc[1:], download_metadata, metadata_agg) # get paths and metadata
 	d_n = len(download_paths.keys())
 	if d_n == 1:
 		fext = [""]
@@ -97,12 +86,12 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 		fext = ["_1", "_2"]
 		paired = True
 	elif d_n == 0:
-		raise Exception("No reads found for sample #: "+acc+". Check https://www.imicrobe.us/#/samples/"+acc[1:]+" to confirm that it exists, and open an issue if existing reads were not found.")
+		raise Exception("No reads found for sample #: "+acc+". Check https://www.imicrobe.us/#/samples/"+acc[1:]+" to confirm that it exists, and open an issue on the grabseqs repo (github.com/louiejtaylor/grabseqs/issues) if existing reads were not found.")
 	else:
 		raise Exception("More than two read files found for "+acc+"--not sure what to do with "+str(d_n) +" reads.")
 	if list_only:
 		print(','.join([acc+ext+".fastq.gz" for ext in fext]))
-		return False
+		return metadata_agg
 
 	# Generally, unless there's a tool like fasterq-dump that downloads both reads,
 	# it's just easier to iterate through file paths (i.e. either one unpaired, or
@@ -110,6 +99,13 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 
 	fx_paths = build_paths(acc, loc, paired, ".fastx")
 	fq_paths = build_paths(acc, loc, paired)
+
+	# Make sure to check that the sample isn't already downloaded
+	if not force:
+		found = check_existing(loc, acc)
+		if found != False:
+			print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
+			return metadata_agg
 
 	for i in list(sorted(download_paths.keys())):
 		print("Downloading sample "+acc+" from iMicrobe")
@@ -139,13 +135,14 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
 				rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
 		else:
 			print("requested sample "+acc+" does not appear to be in .fasta or .fastq format.")
-	return True
+	return metadata_agg
 
-def _parse_imicrobe_readpath(acc):
+def _parse_imicrobe_readpath_metadata(acc, download_metadata, metadata_agg):
 	"""
 	Helper function to parse sample download paths from a sample page.
 	Takes an `acc` with no prefix. Returns a dictionary with download paths
-	for one or two reads like: {1:"url"} or {1:"url1", 2:"url2"}.
+	for one or two reads like: {1:"url"} or {1:"url1", 2:"url2"}. Also returns
+	aggregated metadata.
 	"""
 	acc = str(acc)
 	session = HTMLSession()
@@ -170,7 +167,20 @@ def _parse_imicrobe_readpath(acc):
 	read_links = {}
 	for j in range(len(hits)):
 		read_links[j+1] = working_file_links[_closest_below_index(link_indices, hits[j])].replace("http://datacommons.cyverse.org/browse", "https://de.cyverse.org/anon-files")
-	return read_links
+
+	if download_metadata:
+		html_str = str(r.html.html)
+		relevant_section = html_str[html_str.index("<h2>Attributes"):html_str.index("<h2>Files")]
+		table_only = relevant_section[relevant_section.index("<tbody>")+7:relevant_section.index("</tbody>")].replace(',',';')
+		formatted_table = table_only.replace('</tr><tr>', '\n').replace('</td><td>', ',').replace('<tr>','').replace('<td>','').replace('</tr>','').replace('</td>','')
+		listed_table = [z.split(',') for z in formatted_table.split('\n')]
+		transposed_table =[[z[0] for z in listed_table],[z[1] for z in listed_table]]
+		formatted_table = ','.join(transposed_table[0]) + '\n' + ','.join(transposed_table[1])
+		if type(metadata_agg) == type(None):
+			metadata_agg = pd.read_csv(StringIO(formatted_table))
+		else:
+			metadata_agg = metadata_agg.append(pd.read_csv(StringIO(formatted_table)),sort=True)
+	return read_links, metadata_agg
 
 def _closest_below_index(l,n):
 	"""
