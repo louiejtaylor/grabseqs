@@ -50,9 +50,9 @@ def main():
 				metadata_agg = download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force, args.list, not (args.metadata == ""), metadata_agg)
 	elif repo == "iMicrobe":
 		for imicrobe_identifier in args.imicrobeid:
-			target_list, metadata_agg = get_imicrobe_acc_metadata(imicrobe_identifier)
+			target_list = get_imicrobe_acc_metadata(imicrobe_identifier)
 			for target in target_list:
-				download_imicrobe_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
+				metadata_agg = download_imicrobe_sample(target, args.retries, args.threads, args.outdir, args.force, args.list, not (args.metadata == ""), metadata_agg)
 	else:
 		for sra_identifier in args.id:
 			acclist, metadata_agg = get_sra_acc_metadata(sra_identifier, args.outdir, args.list, not args.SRR_parsing, metadata_agg)
