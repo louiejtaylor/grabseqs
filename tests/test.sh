@@ -52,7 +52,7 @@ fi
 echo -e "$PASS SRA sample listing test passed"
 
 ## test metadata download
-if [ `cat $TMPDIR/test_metadata/SRP057027.tsv | wc -l` -ne 371 ] ; then
+if [ `cat $TMPDIR/test_metadata/SRP057027.tsv | wc -l` -ne 370 ] ; then
     exit 1
 fi
 echo -e "$PASS SRA metadata test passed"
