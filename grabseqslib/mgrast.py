@@ -1,6 +1,7 @@
 import requests, argparse, sys, os, time, json, glob
+import pandas as pd
+from io import StringIO
 from subprocess import call
-
 from grabseqslib.utils import check_existing, fetch_file, check_filetype, fasta_to_fastq
 
 def add_mgrast_subparser(subparser):
@@ -12,6 +13,8 @@ def add_mgrast_subparser(subparser):
 	parser_rast.add_argument('rastid', type=str, nargs='+', 
 				help="One or more MG-RAST project or sample identifiers (mgp####/mgm######)")
 
+	parser_rast.add_argument('-m', dest="metadata", type=str, default="",
+				help="filename in which to save metadata (relative to OUTDIR)")
 	parser_rast.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_rast.add_argument('-r',dest="retries", type=int, default=0,
@@ -23,16 +26,12 @@ def add_mgrast_subparser(subparser):
 				help = "force re-download of files")
 	parser_rast.add_argument('-l', dest="list", action="store_true",
 				help="list (but do not download) samples to be grabbed")
-	parser_rast.add_argument('-m', dest="metadata", action="store_true",
-				help="save metadata")
 
-
-def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
+def get_mgrast_acc_metadata(pacc):
 	"""
 	Function to get list of MG-RAST sample accession numbers from a particular 
 	project. Takes project accession number `pacc` and returns a list of mgm
-	accession numbers. Optional arguments to `save` metadata .csv in a specified
-	`loc`ation.
+	accession numbers.
 	"""
 	if pacc[:3] == "mgm":
 		return [pacc]
@@ -42,25 +41,20 @@ def get_mgrast_acc_metadata(pacc, save = False, loc = ''):
 	sample_list = []
 	for sample in metadata_json["samples"]:
 		sample_list.append(sample["libraries"][0]["data"]["metagenome_id"]["value"]) #metadata: ["data"]
-	if save:
-		f = open(os.path.join(loc,pacc+".json"), 'w')
-		f.write(str(metadata_json))
-		f.close()
-		#TODO: Save metadata detail
-
 	return sample_list
 
-def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False):
+def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False, download_metadata=False, metadata_agg = None):
 	"""
 	Helper function to download original (uploaded) MG-RAST `acc`ession,
 	with support for a particular number of `retries`. Can use multiple
 	`threads` with pigz (if data are not already compressed on arrival).
+	Also will optionally `download_metadata`.
 	"""
 	read_stages = ["050.1", "050.2"] # R1 and R2 (if paired)
 
-	metadata_json = json.loads(requests.get("http://api.metagenomics.anl.gov/download/"+acc).text)
+	stage_json = json.loads(requests.get("http://api.metagenomics.anl.gov/download/"+acc).text)
 	stages_to_grab = []
-	for stage in metadata_json["data"]:
+	for stage in stage_json["data"]:
 		if stage["file_id"] in read_stages:
 			stages_to_grab.append(stage["file_id"])
 	stages_to_grab = sorted(stages_to_grab) # sort because json
@@ -72,6 +66,16 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 			fext = [""] # unpaired, no ext
 		else:
 			fext = ["_"+str(i+1) for i in range(len(stages_to_grab))] # paired
+	if download_metadata:
+		metadata_json = json.loads(requests.get("http://api.metagenomics.anl.gov/metadata/export/"+acc).text)
+		sample_info = metadata_json["mixs"]
+		colnames = ["mgm_id"]+list(sorted(list(sample_info.keys())))
+		colvals = [acc]+[str(sample_info[x]) for x in colnames[1:]]
+		formatted_table = ','.join(colnames)+'\n'+','.join(colvals)
+		if type(metadata_agg) == type(None):
+			metadata_agg = pd.read_csv(StringIO(formatted_table))
+		else:
+			metadata_agg = metadata_agg.append(pd.read_csv(StringIO(formatted_table)),sort=True)
 	if list_only:
 		print(','.join([acc+ext+".fastq.gz" for ext in fext]))
 	else:
@@ -79,7 +83,7 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 			found = check_existing(loc, acc)
 			if found != False:
 				print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
-				return False
+				return metadata_agg
 
 		fa_paths = [os.path.join(loc,acc+ext+".fasta") for ext in fext]
 		fq_paths = [os.path.join(loc,acc+ext+".fastq") for ext in fext]
@@ -106,3 +110,4 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
 					rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
 			else:
 				print("requested sample "+acc+" does not appear to be in .fasta or .fastq format. This may be because it is not publically accessible from MG-RAST.")
+	return metadata_agg

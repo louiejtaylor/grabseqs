@@ -33,7 +33,7 @@ def add_sra_subparser(subparser):
 				help="use legacy fastq-dump instead of fasterq-dump (no multithreaded downloading)")
 
 
-def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR_parsing = True, metadata_agg = None):
+def get_sra_acc_metadata(pacc, loc = '', list_only = False, no_SRR_parsing = True, metadata_agg = None):
 	"""
 	Function to get list of SRA accession numbers from a particular project.
 	Takes project accession number `pacc` and returns a list of SRA 
@@ -56,7 +56,7 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR
 	if type(metadata_agg) == type(None):
 		metadata_agg = pd.read_csv(StringIO(metadata.text))
 	else:
-		metadata_agg = metadata_agg.append(pd.read_csv(StringIO(metadata.text)))
+		metadata_agg = metadata_agg.append(pd.read_csv(StringIO(metadata.text)),sort=True)
 	if list_only:
 		layout_col = lines[0].index("LibraryLayout")
 		if no_SRR_parsing and (pacc.startswith('SRR') or pacc.startswith('ERR')):

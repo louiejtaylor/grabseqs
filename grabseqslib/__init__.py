@@ -45,17 +45,17 @@ def main():
 	metadata_agg = None
 	if repo == "MG-RAST":
 		for rast_proj in args.rastid:
-			target_list = get_mgrast_acc_metadata(rast_proj, args.metadata, args.outdir)
+			target_list = get_mgrast_acc_metadata(rast_proj)
 			for target in target_list:
-				download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
+				metadata_agg = download_mgrast_sample(target, args.retries, args.threads, args.outdir, args.force, args.list, not (args.metadata == ""), metadata_agg)
 	elif repo == "iMicrobe":
 		for imicrobe_identifier in args.imicrobeid:
-			target_list = get_imicrobe_acc_metadata(imicrobe_identifier)
+			target_list, metadata_agg = get_imicrobe_acc_metadata(imicrobe_identifier)
 			for target in target_list:
 				download_imicrobe_sample(target, args.retries, args.threads, args.outdir, args.force, args.list)
 	else:
 		for sra_identifier in args.id:
-			acclist, metadata_agg = get_sra_acc_metadata(sra_identifier, args.metadata, args.outdir, args.list, not args.SRR_parsing, metadata_agg)
+			acclist, metadata_agg = get_sra_acc_metadata(sra_identifier, args.outdir, args.list, not args.SRR_parsing, metadata_agg)
 			for acc in acclist:
 				run_fasterq_dump(acc, args.retries, args.threads, args.outdir, args.force, args.fastqdump)
 	if args.metadata != "":
@@ -65,6 +65,6 @@ def main():
 			print("Metadata saved to new file: " + str(md_path))
 		else:
 			metadata_i = pd.read_csv(md_path)
-			metadata_f = metadata_i.append(metadata_agg)
+			metadata_f = metadata_i.append(metadata_agg,sort=True)
 			metadata_f.to_csv(md_path, index = False)
 			print("Metadata appended to existing file: " + str(md_path))
