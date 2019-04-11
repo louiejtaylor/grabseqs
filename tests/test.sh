@@ -46,7 +46,7 @@ grabseqs -h
 #####
 
 ## test sample listing, metadata download
-if [ `grabseqs sra -m SRP057027.tsv -l -o $TMPDIR/test_metadata/ SRP057027 | wc -l` -ne 369 ]; then
+if [ `grabseqs sra -m SRP057027.tsv -l -o $TMPDIR/test_metadata/ SRP057027 | wc -l` -ne 370 ]; then
     exit 1
 fi
 echo -e "$PASS SRA sample listing test passed"
