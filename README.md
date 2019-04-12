@@ -93,4 +93,6 @@ If you use conda, these will be installed for you!
 
 ## History
 
+**0.5.0** - Metadata available for all sources in .csv format
+
 This project spawned out of/incorporates code from [hisss](https://github.com/louiejtaylor/hisss); many thanks to [ArwaAbbas](https://github.com/ArwaAbbas) for helping make this work!
