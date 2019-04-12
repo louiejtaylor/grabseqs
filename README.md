@@ -32,6 +32,8 @@ Similar syntax works for MG-RAST:
 
 ## Detailed usage
 
+See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/FAQ.md) for detailed troubleshooting tips!
+
 Fun options:
 
     grabseqs sra -t 10 -m metadata.csv -o proj/ -r 3 SRP#######
@@ -81,6 +83,10 @@ And iMicrobe:
     grabseqs imicrobe [-h] [-m METADATA] [-o OUTDIR] [-r RETRIES]
                       [-t THREADS] [-f] [-l]
                       imicrobeid [imicrobeid ...]
+
+## Troubleshooting
+
+See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/FAQ.md) for detailed troubleshooting tips. If the FAQs don't fix your problem, feel free to [open an issue](https://github.com/louiejtaylor/grabseqs/issues)!
 
 ## Dependencies
   
