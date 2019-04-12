@@ -125,7 +125,7 @@ echo -e "$PASS iMicrobe single-sample listing test passed"
 
 ## download a tiny sample, .fasta-formatted
 grabseqs imicrobe -o $TMPDIR/test_tiny_im s740
-ls $TMPDIR/test_tiny_im/s710.fastq.gz  > /dev/null
+ls $TMPDIR/test_tiny_im/s740.fastq.gz  > /dev/null
 echo -e "$PASS iMicrobe fasta-formatted sample download test passed"
 
 ## download a tiny sample, .fastq-formatted paired
