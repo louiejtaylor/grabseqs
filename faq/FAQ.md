@@ -36,6 +36,11 @@ We would appreciate you referencing our GitHub page if you find this tool useful
 
 Sometimes fasterq-dump filters out reads but won't also filter the mate, and I haven't figured out why, or how to circumvent it. Try adding the `--use_fastq_dump` flag--this has fixed the problem every time I've encountered it.
 
+
+ - **Why am I running out of space?**
+ 
+ If you're going to be using SRA data, after you've installed sra-tools, run `vdb-config -i` and turn off local file caching unless you want extra copies of the downloaded sequences taking up space ([read more here](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration)).
+
 [Top](#grabseqs-faq)
 
 ## MG-RAST FAQs
