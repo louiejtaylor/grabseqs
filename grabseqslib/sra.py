@@ -1,6 +1,7 @@
 import requests, argparse, sys, os, time, glob
+import pandas as pd
+from io import StringIO
 from subprocess import call
-
 from grabseqslib.utils import check_existing
 
 def add_sra_subparser(subparser):
@@ -11,6 +12,8 @@ def add_sra_subparser(subparser):
 	parser_sra.add_argument('id', type=str, nargs='+', 
 				help="One or more BioProject, ERR/SRR or ERP/SRP number(s)")
 
+	parser_sra.add_argument('-m', dest="metadata", type=str, default="",
+				help="filename in which to save SRA metadata (.csv format, relative to OUTDIR)")
 	parser_sra.add_argument('-o', dest="outdir", type=str, default="",
 				help="directory in which to save output. created if it doesn't exist")
 	parser_sra.add_argument('-r',dest="retries", type=int, default=2,
@@ -22,8 +25,6 @@ def add_sra_subparser(subparser):
 				help = "force re-download of files")
 	parser_sra.add_argument('-l', dest="list", action="store_true",
 				help="list (but do not download) samples to be grabbed")
-	parser_sra.add_argument('-m', dest="metadata", action="store_true",
-				help="save SRA metadata")
 	parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true", # LEGACY: this will be removed in the
 				help="Legacy option to not parse SRR IDs (now default)")    # next major version as this is now default.
 	parser_sra.add_argument('--parse_run_ids', dest="SRR_parsing", action="store_true", 
@@ -32,7 +33,7 @@ def add_sra_subparser(subparser):
 				help="use legacy fastq-dump instead of fasterq-dump (no multithreaded downloading)")
 
 
-def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR_parsing = True):
+def get_sra_acc_metadata(pacc, loc = '', list_only = False, no_SRR_parsing = True, metadata_agg = None):
 	"""
 	Function to get list of SRA accession numbers from a particular project.
 	Takes project accession number `pacc` and returns a list of SRA 
@@ -42,16 +43,20 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR
 	"""
 	pacc = pacc.strip()
 	metadata = requests.get("http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&db=sra&rettype=runinfo&term="+pacc)
-	if save:
-		f = open(os.path.join(loc,pacc+".tsv"), 'w')
-		f.write(metadata.text)
-		f.close()
+	#if save:
+	#	f = open(os.path.join(loc,pacc+".tsv"), 'w')
+	#	f.write(metadata.text)
+	#	f.close()
 	lines = [l.split(',') for l in metadata.text.split("\n")]
 	try:
 		run_col = lines[0].index("Run")
 	except IndexError:
 		raise IndexError("Could not find samples for accession: "+pacc+". If this accession number is valid, try re-running.")
 	run_list = [l[run_col] for l in lines[1:] if len(l[run_col]) > 0]
+	if type(metadata_agg) == type(None):
+		metadata_agg = pd.read_csv(StringIO(metadata.text))
+	else:
+		metadata_agg = metadata_agg.append(pd.read_csv(StringIO(metadata.text)),sort=True)
 	if list_only:
 		layout_col = lines[0].index("LibraryLayout")
 		if no_SRR_parsing and (pacc.startswith('SRR') or pacc.startswith('ERR')):
@@ -66,12 +71,12 @@ def get_sra_acc_metadata(pacc, save = False, loc = '', list_only = False, no_SRR
 				print(run_list[i]+"_1.fastq.gz,"+run_list[i]+"_2.fastq.gz")
 			else:
 				raise Exception("Unknown library layout: "+layout_list[i])
-		return []
+		return [], metadata_agg
 	else:
 		if no_SRR_parsing:
 			if pacc.startswith('SRR') or pacc.startswith('ERR'):
-				return [pacc]
-		return run_list
+				return [pacc], metadata_agg
+		return run_list, metadata_agg
 
 def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdump=False):
 	"""
