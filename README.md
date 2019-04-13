@@ -30,6 +30,10 @@ Similar syntax works for MG-RAST:
 
     grabseqs mgrast mgp##### mgm#######
 
+And iMicrobe (prefixing the sample numbers with "s" and project numbers with "p"):
+
+    grabseqs imicrobe p4 s3
+
 ## Detailed usage
 
 See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/FAQ.md) for detailed troubleshooting tips!
