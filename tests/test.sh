@@ -124,8 +124,8 @@ fi
 echo -e "$PASS iMicrobe single-sample listing test passed"
 
 ## download a tiny sample, .fasta-formatted
-grabseqs imicrobe -o $TMPDIR/test_tiny_im s740
-ls $TMPDIR/test_tiny_im/s740.fastq.gz  > /dev/null
+grabseqs imicrobe -o $TMPDIR/test_tiny_im s710
+ls $TMPDIR/test_tiny_im/s710.fastq.gz  > /dev/null
 echo -e "$PASS iMicrobe fasta-formatted sample download test passed"
 
 ## download a tiny sample, .fastq-formatted paired
@@ -135,7 +135,7 @@ ls $TMPDIR/test_tiny_im/s6399_2.fastq.gz  > /dev/null
 echo -e "$PASS iMicrobe fastq-formatted sample download test passed"
 
 ## test no clobber
-t=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im s740`
+t=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im s710`
 echo $t
 if [[ $t != *"Pass -f to force download"* ]] ; then
     exit 1
@@ -143,7 +143,7 @@ fi
 echo -e "$PASS iMicrobe no-clobber test passed"
 
 ## test force
-tf=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im -f s740`
+tf=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im -f s710`
 if [[ $tf == *"Pass -f to force download"* ]] ; then
     exit 1
 fi
