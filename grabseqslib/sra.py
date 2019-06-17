@@ -43,20 +43,20 @@ def get_sra_acc_metadata(pacc, loc = '', list_only = False, no_SRR_parsing = Tru
 	"""
 	pacc = pacc.strip()
 	metadata = requests.get("http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&db=sra&rettype=runinfo&term="+pacc)
-	#if save:
-	#	f = open(os.path.join(loc,pacc+".tsv"), 'w')
-	#	f.write(metadata.text)
-	#	f.close()
+	
 	lines = [l.split(',') for l in metadata.text.split("\n")]
+	
 	try:
 		run_col = lines[0].index("Run")
 	except IndexError:
 		raise IndexError("Could not find samples for accession: "+pacc+". If this accession number is valid, try re-running.")
 	run_list = [l[run_col] for l in lines[1:] if len(l[run_col]) > 0]
+
 	if type(metadata_agg) == type(None):
 		metadata_agg = pd.read_csv(StringIO(metadata.text))
 	else:
 		metadata_agg = metadata_agg.append(pd.read_csv(StringIO(metadata.text)),sort=True)
+
 	if list_only:
 		layout_col = lines[0].index("LibraryLayout")
 		if no_SRR_parsing and (pacc.startswith('SRR') or pacc.startswith('ERR')):
