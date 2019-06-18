@@ -33,6 +33,7 @@ RESET="\x1B[0m"
 PASS="${GREEN}\u2714${RESET}"
 
 # environment and package install
+echo "Setting up conda environment..."
 conda env update --name=grabseqs-unittest --file environment.yml -q > /dev/null
 source activate grabseqs-unittest
 python setup.py install -q

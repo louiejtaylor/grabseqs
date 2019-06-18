@@ -2,7 +2,7 @@ import requests, argparse, sys, os, time, glob
 import pandas as pd
 from io import StringIO
 from subprocess import call
-from grabseqslib.utils import check_existing
+from grabseqslib.utils import check_existing, build_paths
 
 def add_sra_subparser(subparser):
 	"""
@@ -107,9 +107,10 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
 			rgzip = 0
 			if retcode == 0:
 				if not fastqdump:
-					rgzip = call(["pigz -f -p "+ str(threads) + ' ' + os.path.join(loc,acc+'*'+'fastq')], shell=True)
-				if rgzip == 0: #pigz exit code is zero even if file not found -_-
-					if len(glob.glob(os.path.join(loc,acc+'*'+'fastq.gz'))) > 0:
+					fnames = build_paths(acc, loc, False) + build_paths(acc, loc, True) # zip all possible output files for that acc
+					rgzip = call(["pigz -f -p "+ str(threads) + ' ' + ' '.join(fnames)], shell=True)
+				if rgzip == 0: #pigz exit code is zero even if file not found
+					if check_existing(loc, acc) != False:
 						break
 
 			# only here if downloading and zipping failed
