@@ -16,7 +16,11 @@ Many possibilites here, and often they are respository-dependent. General tips:
 
 3) Make sure the reads are available/have been released to the public. Grabseqs only accesses publically available reads, so if you can't download from the SRA/iMicrobe/MG-RAST website without logging in, neither can grabseqs.
 
- - **What format is the metadata in?**
+ - **What format are reads?**
+
+Reads are saved as gzipped FASTQ files (extension `.fastq.gz`). If the repository data is in .fasta format, dummy quality scores are added.
+
+ - **How is the metadata formatted?**
 
 Metadata is downloaded and stored in .csv format (to the filename specified by the `-m` flag, e.g. `-m metadata.csv`). Metadata is appended if the filename already exists (assuming the file specified is in proper .csv format). Column names in the repository metadata are maintained. We do not recommend combining metadata from different repositories--while this will work without error, we do not parse/rename columns from each repository.
 
