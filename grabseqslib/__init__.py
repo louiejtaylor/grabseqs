@@ -47,7 +47,24 @@ def main():
 
     # Download samples!
     metadata_agg = None
-    if repo == "MG-RAST":
+    if repo == "SRA":
+        for sra_identifier in args.id:
+            # get targets and metadata
+            acclist, metadata_agg = get_sra_acc_metadata(sra_identifier,
+                                                         args.outdir, 
+                                                         args.list, 
+                                                         not args.SRR_parsing, 
+                                                         metadata_agg)
+            for acc in acclist:
+                # get samples
+                run_fasterq_dump(acc,
+                                 args.retries,
+                                 args.threads,
+                                 args.outdir,
+                                 args.force,
+                                 args.fastqdump)
+    
+    elif repo == "MG-RAST":
         for rast_proj in args.rastid:
             # get targets
             target_list = get_mgrast_acc_metadata(rast_proj)
@@ -77,22 +94,7 @@ def main():
                                                         args.list, 
                                                         not (args.metadata == ""), 
                                                         metadata_agg)
-    else:
-        for sra_identifier in args.id:
-            # get targets and metadata
-            acclist, metadata_agg = get_sra_acc_metadata(sra_identifier,
-                                                         args.outdir, 
-                                                         args.list, 
-                                                         not args.SRR_parsing, 
-                                                         metadata_agg)
-            for acc in acclist:
-                # get samples
-                run_fasterq_dump(acc,
-                                 args.retries,
-                                 args.threads,
-                                 args.outdir,
-                                 args.force,
-                                 args.fastqdump)
+
     
     # Handle metadata
     if args.metadata != "":
