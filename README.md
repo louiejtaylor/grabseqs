@@ -26,6 +26,10 @@ Or any combination of projects (S/ERP), runs (S/ERR), BioProjects (PRJNA):
 
     grabseqs sra SRR######## ERP####### PRJNA######## ERR########
 
+If you'd like to do a dry run and just get a list of samples that will be downloaded, pass `-l`:
+    
+    grabseqs sra -l SRP########
+
 Similar syntax works for MG-RAST:
 
     grabseqs mgrast mgp##### mgm#######
