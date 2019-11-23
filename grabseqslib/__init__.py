@@ -1,6 +1,6 @@
 __all__ = ["utils","sra","mgrast","imicrobe"]
 
-import os, sys, argparse
+import os, sys, argparse, warnings, shutil
 import pandas as pd
 
 from pathlib import Path
@@ -48,6 +48,13 @@ def main():
     # Download samples!
     metadata_agg = None
     if repo == "SRA":
+        has_fasterq_dump = shutil.which("fasterq-dump")
+        if not has_fasterq_dump:
+            warnings.warn("fasterq-dump not detected; using fastq-dump instead")
+            use_fastq_dump = True
+        else:
+            use_fastq_dump = args.fastqdump
+
         for sra_identifier in args.id:
             # get targets and metadata
             acclist, metadata_agg = get_sra_acc_metadata(sra_identifier,
@@ -62,7 +69,7 @@ def main():
                                  args.threads,
                                  args.outdir,
                                  args.force,
-                                 args.fastqdump)
+                                 use_fastq_dump)
     
     elif repo == "MG-RAST":
         for rast_proj in args.rastid:

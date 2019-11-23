@@ -138,3 +138,4 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
                 raise Exception("download for "+acc+" failed. fast(er)q-dump returned "+str(retcode)+", pigz returned "+str(rgzip)+".")
         else:
             break
+
