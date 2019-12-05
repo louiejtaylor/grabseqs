@@ -8,14 +8,12 @@ Utility for simplifying bulk downloading data from next-generation sequencing re
 
 Install grabseqs and all dependencies [via conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html):
 
-    conda install grabseqs -c louiejtaylor -c bioconda  
+    conda install grabseqs -c louiejtaylor -c bioconda -c conda-forge
 
 Or with pip (and install the [dependencies](https://github.com/louiejtaylor/grabseqs#dependencies) yourself):
 
     pip install grabseqs
     
-Currently, grabseqs is not compatible with Python 3.7, but this should be fixed soon!
-
 **Note:** If you're using SRA data, after you've installed sra-tools, run `vdb-config -i` and turn off local file caching unless you want extra copies of the downloaded sequences taking up space ([read more here](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration)).
 
 ## Quick start
