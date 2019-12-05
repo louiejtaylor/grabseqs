@@ -6,23 +6,26 @@ package:
   version: "{{ version }}"
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
 
 build:
   number: 0
   entry_points:
     - grabseqs = grabseqslib:main
-  script: "{{ PYTHON }} -m pip install . --ignore-installed --no-cache-dir -vvv "
+  script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
   host:
-    - pip
-    - python
-  run:
-    - python
-    - sra-tools>2.9
+    - pandas
+    - python {{ python }}
     - requests
-    - argparse
+    - requests_html
+  run:
+    - pandas
+    - python
+    - requests
+    - requests_html
+    - sra-tools
     - pigz
     - wget
 
@@ -33,10 +36,10 @@ test:
     - grabseqs --help
 
 about:
-  home: https://github.com/louiejtaylor/grabseqs
+  home: "https://github.com/louiejtaylor/grabseqs"
   license: MIT
   license_family: MIT
-  summary: Easily download reads from next-gen sequencing repositories like NCBI SRA
+  summary: "Easily download reads from next-gen sequencing repositories like NCBI SRA"
 
 extra:
   recipe-maintainers:
