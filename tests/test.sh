@@ -196,12 +196,17 @@ fi
 echo -e "$PASS MG-RAST force download test passed"
 
 ## test conda install
-conda install -c louiejtaylor -qy grabseqs 
+conda deactivate
+conda create -n grabseqs-unittest-conda -y
+conda activate grabseqs-unittest-conda
+
+conda install -c louiejtaylor -c bioconda -c conda-forge -qy grabseqs 
 echo -e "$PASS conda install test passed"
 
 # cleanup
 rm -r $TMPDIR
 conda deactivate
 conda env remove -n grabseqs-unittest -qy > /dev/null
+conda env remove -n grabseqs-unittest-conda -y
 
 echo -e "$PASS all tests passed!"
