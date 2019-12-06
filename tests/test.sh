@@ -196,14 +196,37 @@ echo -e "$PASS MG-RAST no-clobber test passed"
 
 ## test force
 u=`grabseqs mgrast -o $TMPDIR/test_tiny_mg -f mgm4793571.3`
+echo $u
 if [[ $u == *"Pass -f to force download"* ]] ; then
     exit 1
 fi
 echo -e "$PASS MG-RAST force download test passed"
 
+#########
+# General
+#########
+
+## test missing dependencies
+
+# sra-tools
+conda remove sra-tools -qy
+if grabseqs sra -o $TMPDIR/test_no_sra-tools ERR2279063; then
+    exit 1
+fi
+
+echo -e "$PASS no sra-tools test passed"
+
+# pigz
+conda remove pigz -qy
+u=`grabseqs mgrast -o $TMPDIR/test_nopigz mgm4633450.3`
+echo $u
+if [[ $u != *"pigz not found, using gzip"* ]] ; then
+    exit 1
+fi
+
 ## test conda install
 conda deactivate
-conda create -n grabseqs-unittest-conda -y
+conda create -n grabseqs-unittest-conda -qy
 conda activate grabseqs-unittest-conda
 
 conda install -c louiejtaylor -c bioconda -c conda-forge -qy grabseqs 
@@ -213,6 +236,6 @@ echo -e "$PASS conda install test passed"
 rm -r $TMPDIR
 conda deactivate
 conda env remove -n grabseqs-unittest -qy > /dev/null
-conda env remove -n grabseqs-unittest-conda -y
+conda env remove -n grabseqs-unittest-conda -qy
 
 echo -e "$PASS all tests passed!"

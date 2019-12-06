@@ -123,3 +123,4 @@ def fasta_to_fastq(fp_fa, fp_fq, zipped, dummy_char = "I"):
         fq.write(dummy_char*len(seq)+'\n')
 
     fq.close()
+
