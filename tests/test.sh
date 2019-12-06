@@ -109,6 +109,12 @@ echo -e "$PASS SRA force download test passed"
 # iMicrobe
 ##########
 
+## Fix CircleCI testing issue
+if [ `echo $HOME | grep "/home/circleci" | wc -l` -eq 1 ]; then
+    echo "Tests running on CircleCI, adding add'l dependency"
+    pip install -U "urllib3<1.25"
+fi
+
 ## test sample listing and metadata download
 if [ `grabseqs imicrobe -o $TMPDIR/test_md_im -m META.csv -l p1 | wc -l` -ne 3 ]; then
     exit 1
