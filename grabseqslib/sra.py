@@ -2,7 +2,7 @@ import requests, time
 import pandas as pd
 from io import StringIO
 from subprocess import call
-from grabseqslib.utils import check_existing, build_paths
+from grabseqslib.utils import check_existing, build_paths, gzip_files
 
 def add_sra_subparser(subparser):
     """
@@ -93,7 +93,7 @@ def get_sra_acc_metadata(pacc, loc = '', list_only = False, no_SRR_parsing = Tru
         # otherwise, return all the Run accessions associated with whatever identifier was passed.
         return run_list, metadata_agg
 
-def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdump=False):
+def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdump=False, zip_func="gzip"):
     """
     Helper function to run fast(er)q-dump to grab a particular `acc`ession,
     with support for a particular number of `retries`. Can use multiple
@@ -123,8 +123,9 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
             if retcode == 0:
                 if not fastqdump:
                     # zip all possible output files for that acc
-                    fnames = build_paths(acc, loc, False) + build_paths(acc, loc, True) 
-                    rgzip = call(["pigz -f -p "+ str(threads) + ' ' + ' '.join(fnames)], shell=True)
+                    fnames = build_paths(acc, loc, False) + build_paths(acc, loc, True)
+                    rgzip = gzip_files(fnames, zip_func, threads)
+                    #rgzip = call(["pigz -f -p "+ str(threads) + ' ' + ' '.join(fnames)], shell=True)
                 if rgzip == 0:
                     if check_existing(loc, acc) != False:
                         break

@@ -47,10 +47,21 @@ def main():
 
     # Download samples!
     metadata_agg = None
+    # Check deps
+    zip_func = "gzip"
+    if shutil.which("pigz"):
+        zip_func = "pigz"
+    else:
+        print("pigz not found, using gzip")
+
     if repo == "SRA":
-        has_fasterq_dump = shutil.which("fasterq-dump")
-        if not has_fasterq_dump:
-            warnings.warn("fasterq-dump not detected; using fastq-dump instead")
+        # check deps
+        dep_list = ["fastq-dump", "fasterq-dump"]
+        deps_have = [shutil.which(dep) for dep in dep_list]
+        if (not deps_have[0]) and (not deps_have[1]): # no sra-tools
+            print("Neither fastq-dump nor fasterq-dump found; one is required. Please install sra-tools")
+            sys.exit(1)
+        elif not deps_have[1]:
             use_fastq_dump = True
         else:
             use_fastq_dump = args.fastqdump
@@ -69,40 +80,41 @@ def main():
                                  args.threads,
                                  args.outdir,
                                  args.force,
-                                 use_fastq_dump)
-    
+                                 use_fastq_dump,
+                                 zip_func)
+
     elif repo == "MG-RAST":
         for rast_proj in args.rastid:
             # get targets
             target_list = get_mgrast_acc_metadata(rast_proj)
-            
+
             for target in target_list:
                 # get samples and/or metadata
-                metadata_agg = download_mgrast_sample(target, 
-                                                      args.retries, 
-                                                      args.threads, 
-                                                      args.outdir, 
-                                                      args.force, 
-                                                      args.list, 
-                                                      not (args.metadata == ""), 
-                                                      metadata_agg)
+                metadata_agg = download_mgrast_sample(target,
+                                                      args.retries,
+                                                      args.threads,
+                                                      args.outdir,
+                                                      args.force,
+                                                      args.list,
+                                                      not (args.metadata == ""),
+                                                      metadata_agg, zip_func)
     elif repo == "iMicrobe":
         for imicrobe_identifier in args.imicrobeid:
             # get targets
             target_list = get_imicrobe_acc_metadata(imicrobe_identifier)
-            
+
             for target in target_list:
                 # get samples and/or metadata
-                metadata_agg = download_imicrobe_sample(target, 
-                                                        args.retries, 
-                                                        args.threads, 
-                                                        args.outdir, 
-                                                        args.force, 
-                                                        args.list, 
-                                                        not (args.metadata == ""), 
-                                                        metadata_agg)
+                metadata_agg = download_imicrobe_sample(target,
+                                                        args.retries,
+                                                        args.threads,
+                                                        args.outdir,
+                                                        args.force,
+                                                        args.list,
+                                                        not (args.metadata == ""),
+                                                        metadata_agg, zip_func)
 
-    
+
     # Handle metadata
     if args.metadata != "":
         md_path = Path(args.outdir) / Path(args.metadata)
