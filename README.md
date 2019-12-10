@@ -48,7 +48,7 @@ Fun options:
 
 (translation: use 10 threads, save metadata to `proj/metadata.csv`, download to the dir `proj/`, retry failed downloads 3x, get all samples from SRP#######)
     
-If you'd like to do a dry run and just get a list of samples that will be downloaded, pass `-l`:
+If you'd like to do a dry run and only get a list of samples that will be downloaded, pass `-l`:
     
     grabseqs sra -l SRP########
 
