@@ -3,7 +3,7 @@ import pandas as pd
 from io import StringIO
 from subprocess import call
 from requests_html import HTMLSession
-from grabseqslib.utils import check_existing, fetch_file, build_paths, check_filetype, fasta_to_fastq
+from grabseqslib.utils import check_existing, fetch_file, build_paths, check_filetype, fasta_to_fastq, gzip_files
 
 def add_imicrobe_subparser(subparser):
     """
@@ -63,7 +63,7 @@ def get_imicrobe_acc_metadata(pacc):
     # Format and return sample accession numbers
     return ["s"+ sID for sID in sample_list]
 
-def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False, download_metadata=False, metadata_agg = None):
+def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False, download_metadata=False, metadata_agg = None, zip_func = "gzip"):
     """
     Helper function to download sequences given an iMicrobe `acc`ession,
     with support for a particular number of `retries`. Can use multiple
@@ -124,7 +124,8 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
             print("Converting .fasta to .fastq (adding dummy quality scores), compressing")
             fasta_to_fastq(fx_path, fq_path, gzipped)
             retcode = call(["rm "+fx_path], shell=True) # get rid of old fasta
-            rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+            rzip = gzip_files(fq_path, zip_func, threads)
+            #rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
         elif ftype.startswith("fastq"):
             if gzipped:
                 print("downloaded file in .fastq.gz format already!")
@@ -132,7 +133,8 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
             else:
                 print("downloaded file in .fastq format already, compressing .fastq")
                 call(["mv", fx_path, fq_path])
-                rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+                rzip = gzip_files(fq_path, zip_func, threads)
+                #rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
         else:
             print("requested sample "+acc+" does not appear to be in .fasta or .fastq format.")
     return metadata_agg

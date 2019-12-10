@@ -109,50 +109,56 @@ echo -e "$PASS SRA force download test passed"
 # iMicrobe
 ##########
 
+## Fix CircleCI testing issue
+if [ `echo $HOME | grep "/home/circleci" | wc -l` -eq 1 ]; then
+    echo "Tests running on CircleCI, adding add'l dependency"
+    pip install -U "urllib3<1.25"
+fi
+
 ## test sample listing and metadata download
-#if [ `grabseqs imicrobe -o $TMPDIR/test_md_im -m META.csv -l p1 | wc -l` -ne 3 ]; then
-#    exit 1
-#fi
-#echo -e "$PASS iMicrobe sample listing test passed"
+if [ `grabseqs imicrobe -o $TMPDIR/test_md_im -m META.csv -l p1 | wc -l` -ne 3 ]; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe sample listing test passed"
 
 ## test metadata download
-#if [ `cat $TMPDIR/test_md_im/META.csv | wc -l` -ne 3 ] ; then
-#    exit 1
-#fi
-#echo -e "$PASS iMicrobe metadata test passed"
+if [ `cat $TMPDIR/test_md_im/META.csv | wc -l` -ne 3 ] ; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe metadata test passed"
 
 ## paired sample listing
-#ps=`grabseqs imicrobe -l s6398`
-#if [ "$ps" != "s6398_1.fastq.gz,s6398_2.fastq.gz" ]; then
-#    exit 1
-#fi
-#echo -e "$PASS iMicrobe single-sample listing test passed"
+ps=`grabseqs imicrobe -l s6398`
+if [ "$ps" != "s6398_1.fastq.gz,s6398_2.fastq.gz" ]; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe single-sample listing test passed"
 
 ## download a tiny sample, .fasta-formatted
-#grabseqs imicrobe -o $TMPDIR/test_tiny_im s710
-#ls $TMPDIR/test_tiny_im/s710.fastq.gz  > /dev/null
-#echo -e "$PASS iMicrobe fasta-formatted sample download test passed"
+grabseqs imicrobe -o $TMPDIR/test_tiny_im s710
+ls $TMPDIR/test_tiny_im/s710.fastq.gz  > /dev/null
+echo -e "$PASS iMicrobe fasta-formatted sample download test passed"
 
 ## download a tiny sample, .fastq-formatted paired
-#grabseqs imicrobe -o $TMPDIR/test_tiny_im s6399
-#ls $TMPDIR/test_tiny_im/s6399_1.fastq.gz  > /dev/null
-#ls $TMPDIR/test_tiny_im/s6399_2.fastq.gz  > /dev/null
-#echo -e "$PASS iMicrobe fastq-formatted sample download test passed"
+grabseqs imicrobe -o $TMPDIR/test_tiny_im s6399
+ls $TMPDIR/test_tiny_im/s6399_1.fastq.gz  > /dev/null
+ls $TMPDIR/test_tiny_im/s6399_2.fastq.gz  > /dev/null
+echo -e "$PASS iMicrobe fastq-formatted sample download test passed"
 
 ## test no clobber
-#t=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im s710`
-#echo $t
-#if [[ $t != *"Pass -f to force download"* ]] ; then
-#    exit 1
-#fi
-#echo -e "$PASS iMicrobe no-clobber test passed"
+t=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im s710`
+echo $t
+if [[ $t != *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe no-clobber test passed"
 
 ## test force
-#tf=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im -f s710`
-#if [[ $tf == *"Pass -f to force download"* ]] ; then
-#    exit 1
-#fi
-#echo -e "$PASS iMicrobe force download test passed"
+tf=`grabseqs imicrobe -t 2 -o $TMPDIR/test_tiny_im -f s710`
+if [[ $tf == *"Pass -f to force download"* ]] ; then
+    exit 1
+fi
+echo -e "$PASS iMicrobe force download test passed"
 
 #########
 # MG-RAST
@@ -190,14 +196,37 @@ echo -e "$PASS MG-RAST no-clobber test passed"
 
 ## test force
 u=`grabseqs mgrast -o $TMPDIR/test_tiny_mg -f mgm4793571.3`
+echo $u
 if [[ $u == *"Pass -f to force download"* ]] ; then
     exit 1
 fi
 echo -e "$PASS MG-RAST force download test passed"
 
+#########
+# General
+#########
+
+## test missing dependencies
+
+# sra-tools
+conda remove sra-tools -qy
+if grabseqs sra -o $TMPDIR/test_no_sra-tools ERR2279063; then
+    exit 1
+fi
+
+echo -e "$PASS no sra-tools test passed"
+
+# pigz
+conda remove pigz -qy
+u=`grabseqs mgrast -o $TMPDIR/test_nopigz mgm4633450.3`
+echo $u
+if [[ $u != *"pigz not found, using gzip"* ]] ; then
+    exit 1
+fi
+
 ## test conda install
 conda deactivate
-conda create -n grabseqs-unittest-conda -y
+conda create -n grabseqs-unittest-conda -qy
 conda activate grabseqs-unittest-conda
 
 conda install -c louiejtaylor -c bioconda -c conda-forge -qy grabseqs 
@@ -207,6 +236,6 @@ echo -e "$PASS conda install test passed"
 rm -r $TMPDIR
 conda deactivate
 conda env remove -n grabseqs-unittest -qy > /dev/null
-conda env remove -n grabseqs-unittest-conda -y
+conda env remove -n grabseqs-unittest-conda -qy
 
 echo -e "$PASS all tests passed!"

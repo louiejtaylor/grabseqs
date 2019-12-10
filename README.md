@@ -105,8 +105,18 @@ See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/
 
 If you use conda, these will be installed for you!
 
-## History
+------------
 
-**0.5.0** - Metadata available for all sources in .csv format
+## Changelog
+
+**0.6.0** - Gracefully handle incomplete or missing dependencies (2019-12-07)
+
+**0.5.2** - Improvements to work with multiple versions of Python 3 (2019-12-05)
+
+**0.5.1** - Hotfix handling outdated versions of sra-tools (2019-11-23)
+
+**0.5.0** - Metadata available for all sources in .csv format (2019-04-11)
+
+## History
 
 This project spawned out of/incorporates code from [hisss](https://github.com/louiejtaylor/hisss); many thanks to [ArwaAbbas](https://github.com/ArwaAbbas) for helping make this work!

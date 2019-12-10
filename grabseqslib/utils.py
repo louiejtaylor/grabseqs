@@ -1,4 +1,4 @@
-import os, glob, gzip
+import os, glob, gzip, sys
 from subprocess import call
 from requests_html import HTMLSession
 
@@ -34,6 +34,22 @@ def check_existing(save_loc, acc):
         return "unpaired"
     else:
         return False
+
+def gzip_files(paths, tool="gzip", threads=1):
+    """
+    Zips files at one or more `paths` using specified `tool`.
+    Returns the command-line tool's return code.
+    """
+    if type(paths) != type(["list'o'strings"]):
+        paths = [paths]
+    if tool == "gzip":
+        retcode = call(["gzip -f " + ' '.join(paths)], shell=True)
+    elif tool == "pigz":
+        retcode = call(["pigz -f -p "+ str(threads) + ' ' + ' '.join(paths)], shell=True)
+    else:
+        print("Unrecognized tool "+tool+" specified: cannot zip ", paths)
+        sys.exit(1)
+    return retcode
 
 def fetch_file(url, outfile, retries = 0):
     """
@@ -123,3 +139,4 @@ def fasta_to_fastq(fp_fa, fp_fq, zipped, dummy_char = "I"):
         fq.write(dummy_char*len(seq)+'\n')
 
     fq.close()
+

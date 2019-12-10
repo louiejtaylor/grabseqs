@@ -2,7 +2,7 @@ import requests, os, json
 import pandas as pd
 from io import StringIO
 from subprocess import call
-from grabseqslib.utils import check_existing, fetch_file, check_filetype, fasta_to_fastq
+from grabseqslib.utils import check_existing, fetch_file, check_filetype, fasta_to_fastq, gzip_files
 
 def add_mgrast_subparser(subparser):
     """
@@ -43,7 +43,7 @@ def get_mgrast_acc_metadata(pacc):
         sample_list.append(sample["libraries"][0]["data"]["metagenome_id"]["value"]) #metadata: ["data"]
     return sample_list
 
-def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False, download_metadata=False, metadata_agg = None):
+def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False, download_metadata=False, metadata_agg = None, zip_func = "gzip"):
     """
     Helper function to download original (uploaded) MG-RAST `acc`ession,
     with support for a particular number of `retries`. Can use multiple
@@ -99,7 +99,8 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
                 print("Converting .fasta to .fastq (adding dummy quality scores), compressing")
                 fasta_to_fastq(fa_path, fq_path, gzipped)
                 retcode = call(["rm "+fa_path], shell=True) # get rid of old fasta
-                rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+                rzip = gzip_files(fq_path, zip_func, threads)
+                #rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
             elif ftype.startswith("fastq"):
                 if gzipped:
                     print("downloaded file in .fastq.gz format already!")
@@ -107,7 +108,8 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
                 else:
                     print("downloaded file in .fastq format already, compressing .fastq")
                     call(["mv", fa_path, fq_path])
-                    rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+                    rzip = gzip_files(fq_path, zip_func, threads)
+                    #rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
             else:
                 print("requested sample "+acc+" does not appear to be in .fasta or .fastq format. This may be because it is not publically accessible from MG-RAST.")
     return metadata_agg
