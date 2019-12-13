@@ -142,7 +142,6 @@ function cleanup {
 
     verbose "Deleting temporary conda environment \n"
     conda env remove -yqn grabseqs-unittest
-    conda env remove -yqn grabseqs-unittest-conda
 
     # Remove temp directory if created by us
     if [ "$USER_TMPDIR" = false ]; then

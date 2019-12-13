@@ -35,6 +35,7 @@ function test_grabseqs_conda_install {
     conda activate grabseqs-unittest-conda
     conda install -c louiejtaylor -c bioconda -c conda-forge -qy grabseqs
     conda deactivate
+    conda env remove -yqn grabseqs-unittest-conda
     conda activate grabseqs-unittest
 }
 
@@ -46,5 +47,6 @@ function test_grabseqs_conda_newer_python {
     conda install python=3.7 -qy
     conda install -c louiejtaylor -c bioconda -c conda-forge grabseqs -qy
     conda deactivate
+    conda env remove -yqn grabseqs-unittest-py37
     conda activate grabseqs-unittest
 }
