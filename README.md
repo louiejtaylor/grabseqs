@@ -110,8 +110,8 @@ If you use conda, these will be installed for you!
 ## Changelog
 
 **Dev version (not yet released)**
- - 
-
+ - Coming soon!
+ 
 **0.6.0** (2019-12-12)
  - Gracefully handle incomplete or missing dependencies
  - Major rewrite of test suite
