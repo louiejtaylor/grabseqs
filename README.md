@@ -109,13 +109,21 @@ If you use conda, these will be installed for you!
 
 ## Changelog
 
-**0.6.0** - Gracefully handle incomplete or missing dependencies (2019-12-07)
+**Dev version (not yet released)**
+ - 
 
-**0.5.2** - Improvements to work with multiple versions of Python 3 (2019-12-05)
+**0.6.0** (2019-12-12)
+ - Gracefully handle incomplete or missing dependencies
+ - Major rewrite of test suite
 
-**0.5.1** - Hotfix handling outdated versions of sra-tools (2019-11-23)
+**0.5.2** (2019-12-05)
+ - Improvements to work with multiple versions of Python 3
 
-**0.5.0** - Metadata available for all sources in .csv format (2019-04-11)
+**0.5.1** (2019-11-23)
+ - Hotfix handling outdated versions of sra-tools
+
+**0.5.0** (2019-04-11)
+ - Metadata available for all sources in .csv format
 
 ## History
 
