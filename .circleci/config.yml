@@ -12,4 +12,4 @@ jobs:
     steps:
       - checkout
       - run: bash .circleci/setup.sh
-      - run: bash tests/run_tests.bash -d $HOME
+      - run: bash tests/run_tests.bash -i -d $HOME
