@@ -109,7 +109,6 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
                     print("downloaded file in .fastq format already, compressing .fastq")
                     call(["mv", fa_path, fq_path])
                     rzip = gzip_files(fq_path, zip_func, threads)
-                    #rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
             else:
                 print("requested sample "+acc+" does not appear to be in .fasta or .fastq format. This may be because it is not publically accessible from MG-RAST.")
     return metadata_agg

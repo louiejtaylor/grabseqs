@@ -125,7 +125,7 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
                     # zip all possible output files for that acc
                     fnames = build_paths(acc, loc, False) + build_paths(acc, loc, True)
                     rgzip = gzip_files(fnames, zip_func, threads)
-                    #rgzip = call(["pigz -f -p "+ str(threads) + ' ' + ' '.join(fnames)], shell=True)
+
                 if rgzip == 0:
                     if check_existing(loc, acc) != False:
                         break
