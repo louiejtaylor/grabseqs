@@ -110,7 +110,7 @@ If you use conda, these will be installed for you!
 ## Changelog
 
 **Dev version (not yet released)**
- - Coming soon!
+ - Validate compressed files (#8 and #34)
  
 **0.6.0** (2019-12-12)
  - Gracefully handle incomplete or missing dependencies

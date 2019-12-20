@@ -125,7 +125,7 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
             fasta_to_fastq(fx_path, fq_path, gzipped)
             retcode = call(["rm "+fx_path], shell=True) # get rid of old fasta
             rzip = gzip_files(fq_path, zip_func, threads)
-            #rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+
         elif ftype.startswith("fastq"):
             if gzipped:
                 print("downloaded file in .fastq.gz format already!")
@@ -134,7 +134,7 @@ def download_imicrobe_sample(acc, retries = 0, threads = 1, loc='', force=False,
                 print("downloaded file in .fastq format already, compressing .fastq")
                 call(["mv", fx_path, fq_path])
                 rzip = gzip_files(fq_path, zip_func, threads)
-                #rzip = call(["pigz -f -p "+ str(threads) + ' ' + fq_path], shell=True)
+
         else:
             print("requested sample "+acc+" does not appear to be in .fasta or .fastq format.")
     return metadata_agg
