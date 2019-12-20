@@ -42,12 +42,16 @@ def gzip_files(paths, tool="gzip", threads=1):
     """
     if type(paths) != type(["list'o'strings"]):
         paths = [paths]
+    validated_paths = []
+    for p in paths:
+        if os.path.isfile(p):
+            validated_paths.append(p)
     if tool == "gzip":
-        retcode = call(["gzip -f " + ' '.join(paths)], shell=True)
+        retcode = call(["gzip -f " + ' '.join(validated_paths)], shell=True)
     elif tool == "pigz":
-        retcode = call(["pigz -f -p "+ str(threads) + ' ' + ' '.join(paths)], shell=True)
+        retcode = call(["pigz -f -p "+ str(threads) + ' ' + ' '.join(validated_paths)], shell=True)
     else:
-        print("Unrecognized tool "+tool+" specified: cannot zip ", paths)
+        print("Unrecognized tool "+tool+" specified: cannot compress ", validated_paths)
         sys.exit(1)
     return retcode
 
