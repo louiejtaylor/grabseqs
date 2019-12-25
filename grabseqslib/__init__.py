@@ -4,7 +4,7 @@ import os, sys, argparse, warnings, shutil
 import pandas as pd
 
 from pathlib import Path
-from grabseqslib.sra import process_sra
+from grabseqslib.sra import process_sra, add_sra_subparser
 from grabseqslib.imicrobe import get_imicrobe_acc_metadata, download_imicrobe_sample, add_imicrobe_subparser
 from grabseqslib.mgrast import get_mgrast_acc_metadata, download_mgrast_sample, add_mgrast_subparser
 
@@ -56,34 +56,7 @@ def main():
 
     # Download samples
     if repo == "SRA":
-        # check deps
         metadata_agg = process_sra(args, zip_func)
-        #dep_list = ["fastq-dump", "fasterq-dump"]
-        #deps_have = [shutil.which(dep) for dep in dep_list]
-        #if (not deps_have[0]) and (not deps_have[1]): # no sra-tools
-        #    print("Neither fastq-dump nor fasterq-dump found; one is required. Please install sra-tools")
-        #    sys.exit(1)
-        #elif not deps_have[1]:
-        #    use_fastq_dump = True
-        #else:
-        #    use_fastq_dump = args.fastqdump
-
-        #for sra_identifier in args.id:
-            # get targets and metadata
-        #    acclist, metadata_agg = get_sra_acc_metadata(sra_identifier,
-        #                                                 args.outdir, 
-        #                                                 args.list, 
-        #                                                 not args.SRR_parsing, 
-        #                                                 metadata_agg)
-        #    for acc in acclist:
-                # get samples
-        #        run_fasterq_dump(acc,
-        #                         args.retries,
-        #                         args.threads,
-        #                         args.outdir,
-        #                         args.force,
-        #                         use_fastq_dump,
-        #                         zip_func)
 
     elif repo == "MG-RAST":
         for rast_proj in args.rastid:
