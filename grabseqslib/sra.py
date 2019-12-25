@@ -4,6 +4,44 @@ from io import StringIO
 from subprocess import call
 from grabseqslib.utils import check_existing, build_paths, gzip_files
 
+def process_sra(args, zip_func):
+    """
+    High-level logic for SRA download processing. Takes
+    `args` from grabseqslib argument parser and `zip_func`
+    """
+    # check deps
+    dep_list = ["fastq-dump", "fasterq-dump"]
+    deps_have = [shutil.which(dep) for dep in dep_list]
+    if (not deps_have[0]) and (not deps_have[1]): # no sra-tools
+        print("Neither fastq-dump nor fasterq-dump found; one is required. Please install sra-tools")
+        sys.exit(1)
+    elif not deps_have[1]:
+        use_fastq_dump = True
+    else:
+        use_fastq_dump = args.fastqdump
+
+    metadata_agg = None
+
+    for sra_identifier in args.id:
+        # get targets and metadata
+        acclist, metadata_agg = get_sra_acc_metadata(sra_identifier,
+                                                     args.outdir,
+                                                     args.list,
+                                                     not args.SRR_parsing,
+                                                     metadata_agg)
+        for acc in acclist:
+            # get samples
+            run_fasterq_dump(acc,
+                             args.retries,
+                             args.threads,
+                             args.outdir,
+                             args.force,
+                             use_fastq_dump,
+                             zip_func)
+
+    return metadata_agg
+
+
 def add_sra_subparser(subparser):
     """
     Function to add subparser for SRA data.
