@@ -8,8 +8,23 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.6
-
     steps:
       - checkout
       - run: bash .circleci/setup.sh
       - run: bash tests/run_tests.bash -i -d $HOME
+
+workflows:
+  version: 2
+  weeklybuild:
+    triggers:
+      - schedule:
+          cron: "30 14 * * 3"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
+  default:
+    jobs:
+      - build
