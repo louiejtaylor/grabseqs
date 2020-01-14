@@ -10,7 +10,7 @@ Install grabseqs and all dependencies [via conda](https://conda.io/projects/cond
 
     conda install grabseqs -c louiejtaylor -c bioconda -c conda-forge
 
-Or with pip (and install the [dependencies](https://github.com/louiejtaylor/grabseqs#dependencies) yourself):
+Or with pip (and install the non-Python [dependencies](https://github.com/louiejtaylor/grabseqs#dependencies) yourself):
 
     pip install grabseqs
     
