@@ -48,7 +48,7 @@ function test_sra_paired_fastqdump {
 }
 
 # test no clobber
-function test_sra_paired_no_clobber {
+function test_sra_no_clobber {
     t=`grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra ERR2279063`
     echo $t
     if [[ $t != *"Pass -f to force download"* ]] ; then
@@ -57,10 +57,23 @@ function test_sra_paired_no_clobber {
 }
 
 # test force
-function test_sra_paired_forced {
+function test_sra_forced {
     tf=`grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra -f ERR2279063`
     echo $tf
     if [[ $tf == *"Pass -f to force download"* ]] ; then
         exit 1
     fi
 }
+
+# test custom args to fasterq-dump (#44)
+function test_sra_custom_fasterqdump_args {
+    grabseqs sra ERR2279063 -o $TMPDIR/test_fasterqdump_custom --custom_fqdump_args "-f -3"
+    ls $TMPDIR/test_fasterqdump_custom/ERR2279063.fastq.gz
+}
+
+# test custom args to fastq-dump
+function test_sra_custom_fastqdump_args {
+    grabseqs sra ERR2279063 --use_fastq_dump -o $TMPDIR/test_fastqdump_custom --custom_fqdump_args "--gzip --split-3 --skip-technical"
+    ls $TMPDIR/test_fastqdump_custom/ERR2279063.fastq.gz
+}
+
