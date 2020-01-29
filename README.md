@@ -115,8 +115,11 @@ If you use conda, these will be installed for you!
 ## Changelog
 
 **Dev version (not yet released)**
+ - coming soon!
+
+**0.7.0** (2020-01-29)
  - Allow users to pass custom args to fast(er)q-dump
- - Minor re-writes of download handling for easier code readability
+ - Minor re-writes of download handling code for easier readability
 
 **0.6.1** (2019-12-20)
  - Validate compressed files (fix #8 and #34)
