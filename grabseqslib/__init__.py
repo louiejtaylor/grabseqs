@@ -22,8 +22,7 @@ def main():
     add_imicrobe_subparser(subpa)
     add_mgrast_subparser(subpa)
 
-    args_with_unknowns = parser.parse_known_args()
-    args = args_with_unknowns[0]
+    args = parser.parse_args()
     # Make output directories if they don't exist
     try:
         if args.outdir != "":
@@ -56,7 +55,7 @@ def main():
 
     # Download samples
     if repo == "SRA":
-        metadata_agg = process_sra(args_with_unknowns, zip_func)
+        metadata_agg = process_sra(args, zip_func)
 
     elif repo == "MG-RAST":
         metadata_agg = process_mgrast(args, zip_func)
