@@ -27,6 +27,26 @@ def add_mgrast_subparser(subparser):
     parser_rast.add_argument('-l', dest="list", action="store_true",
                 help="list (but do not download) samples to be grabbed")
 
+def process_mgrast(args, zip_func):
+    """
+    Top-level function to process MG-RAST download. Returns aggregated metadata.
+    """
+    metadata_agg = None
+    for rast_proj in args.rastid:
+        # get targets
+        target_list = get_mgrast_acc_metadata(rast_proj)
+        for target in target_list:
+            # get samples and/or metadata
+            metadata_agg = download_mgrast_sample(target,
+                                                  args.retries,
+                                                  args.threads,
+                                                  args.outdir,
+                                                  args.force,
+                                                  args.list,
+                                                  not (args.metadata == ""),
+                                                  metadata_agg, zip_func)
+    return metadata_agg
+
 def get_mgrast_acc_metadata(pacc):
     """
     Function to get list of MG-RAST sample accession numbers from a particular 

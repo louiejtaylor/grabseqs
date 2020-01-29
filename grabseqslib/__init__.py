@@ -5,8 +5,8 @@ import pandas as pd
 
 from pathlib import Path
 from grabseqslib.sra import process_sra, add_sra_subparser
-from grabseqslib.imicrobe import get_imicrobe_acc_metadata, download_imicrobe_sample, add_imicrobe_subparser
-from grabseqslib.mgrast import get_mgrast_acc_metadata, download_mgrast_sample, add_mgrast_subparser
+from grabseqslib.imicrobe import process_imicrobe, add_imicrobe_subparser
+from grabseqslib.mgrast import process_mgrast, add_mgrast_subparser
 
 def main():
     '''
@@ -59,36 +59,10 @@ def main():
         metadata_agg = process_sra(args, zip_func)
 
     elif repo == "MG-RAST":
-        for rast_proj in args.rastid:
-            # get targets
-            target_list = get_mgrast_acc_metadata(rast_proj)
+        metadata_agg = process_mgrast(args, zip_func)
 
-            for target in target_list:
-                # get samples and/or metadata
-                metadata_agg = download_mgrast_sample(target,
-                                                      args.retries,
-                                                      args.threads,
-                                                      args.outdir,
-                                                      args.force,
-                                                      args.list,
-                                                      not (args.metadata == ""),
-                                                      metadata_agg, zip_func)
     elif repo == "iMicrobe":
-        for imicrobe_identifier in args.imicrobeid:
-            # get targets
-            target_list = get_imicrobe_acc_metadata(imicrobe_identifier)
-
-            for target in target_list:
-                # get samples and/or metadata
-                metadata_agg = download_imicrobe_sample(target,
-                                                        args.retries,
-                                                        args.threads,
-                                                        args.outdir,
-                                                        args.force,
-                                                        args.list,
-                                                        not (args.metadata == ""),
-                                                        metadata_agg, zip_func)
-
+        metadata_agg = process_imicrobe(args, zip_func)
 
     # Handle metadata
     if args.metadata != "":
