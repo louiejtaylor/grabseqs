@@ -67,14 +67,14 @@ function test_sra_forced {
 
 # test custom args to fasterq-dump (#44)
 function test_sra_custom_fasterqdump_args {
-    grabseqs sra SRR1913936 -o $TMPDIR/test_fasterqdump_custom --custom_fqdump_args='--split-spot'
+    grabseqs sra SRR1913936 -r 0 -o $TMPDIR/test_fasterqdump_custom --custom_fqdump_args='--split-spot'
     # this is a paired run, but with `--split-spot` instead of `--split-3` it should come down as a single interleaved fastq.gz
     ls $TMPDIR/test_fasterqdump_custom/SRR1913936.fastq.gz
 }
 
 # test custom args to fastq-dump (#44)
 function test_sra_custom_fastqdump_args {
-    grabseqs sra SRR1913936 --use_fastq_dump -o $TMPDIR/test_fastqdump_custom --custom_fqdump_args='--gzip --skip-technical'
+    grabseqs sra SRR1913936 -r 0 --use_fastq_dump -o $TMPDIR/test_fastqdump_custom --custom_fqdump_args='--gzip --skip-technical'
     # this is a paired run, but without the `--split-3` arg it should come down as a single interleaved fastq.gz
     ls $TMPDIR/test_fastqdump_custom/SRR1913936.fastq.gz
 }

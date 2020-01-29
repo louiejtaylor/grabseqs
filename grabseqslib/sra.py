@@ -74,7 +74,7 @@ def add_sra_subparser(subparser):
     parser_sra.add_argument("--use_fastq_dump", dest="fastqdump", action="store_true",
                 help="use legacy fastq-dump instead of fasterq-dump (no multithreaded downloading)")
     parser_sra.add_argument("--custom_fqdump_args", dest="custom_fqd_args", type=str, default="",
-                help="pass unknown args to fast(er)q-dump. NOTE: Use full arg names\nfrom sra-tools to avoid conflicts!")
+                help="'string' containing args to pass to fast(er)q-dump")
 
     # LEGACY: this will be removed in the next major version as this is now default.
     parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true", 
