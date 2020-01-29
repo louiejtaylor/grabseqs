@@ -11,7 +11,6 @@ function test_sra_metadata_downloaded {
     if [ `cat $TMPDIR/test_metadata/SRP057027.tsv | wc -l` -ne 370 ] ; then
         exit 1
     fi
-    #echo -e "$PASS SRA metadata test passed"
 }
 
 # test behavior with -l and --no_parsing
@@ -58,7 +57,7 @@ function test_sra_no_clobber {
 
 # test force
 function test_sra_forced {
-    tf=`grabseqs sra -t 2 -o $TMPDIR/test_fastqdump_sra -f ERR2279063`
+    tf=`grabseqs sra -r 0 -t 2 -o $TMPDIR/test_fastqdump_sra -f ERR2279063`
     echo $tf
     if [[ $tf == *"Pass -f to force download"* ]] ; then
         exit 1
