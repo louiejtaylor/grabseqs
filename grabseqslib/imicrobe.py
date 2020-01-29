@@ -30,6 +30,27 @@ def add_imicrobe_subparser(subparser):
     parser_imicrobe.add_argument('-l', dest="list", action="store_true",
                 help="list (but do not download) samples to be grabbed")
 
+def process_imicrobe(args, zip_func):
+    """
+    Top-level function to process iMicrobe download. Returns aggregated metadata.
+    """
+    metadata_agg = None
+    for imicrobe_identifier in args.imicrobeid:
+        # get targets
+        target_list = get_imicrobe_acc_metadata(imicrobe_identifier)
+
+        for target in target_list:
+            # get samples and/or metadata
+            metadata_agg = download_imicrobe_sample(target,
+                                                    args.retries,
+                                                    args.threads,
+                                                    args.outdir,
+                                                    args.force,
+                                                    args.list,
+                                                    not (args.metadata == ""),
+                                                    metadata_agg, zip_func)
+    return metadata_agg
+
 def get_imicrobe_acc_metadata(pacc):
     """
     Function to get list of iMicrobe sample accession numbers from a particular
