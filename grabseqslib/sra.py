@@ -37,6 +37,7 @@ def process_sra(args, zip_func):
                              args.outdir,
                              args.force,
                              use_fastq_dump,
+                             args.custom_fqd_args,
                              zip_func)
 
     return metadata_agg
@@ -72,6 +73,9 @@ def add_sra_subparser(subparser):
                                 help="parse SRR/ERR identifers (do not pass straight to fasterq-dump)")
     parser_sra.add_argument("--use_fastq_dump", dest="fastqdump", action="store_true",
                 help="use legacy fastq-dump instead of fasterq-dump (no multithreaded downloading)")
+    parser_sra.add_argument("--custom_fqdump_args", dest="custom_fqd_args", type=str, default="",
+                help="'string' containing args to pass to fast(er)q-dump")
+
     # LEGACY: this will be removed in the next major version as this is now default.
     parser_sra.add_argument('--no_parsing', dest="no_SRR_parsing", action="store_true", 
                 help="Legacy option to not parse SRR IDs (now default)")
@@ -131,7 +135,7 @@ def get_sra_acc_metadata(pacc, loc = '', list_only = False, no_SRR_parsing = Tru
         # otherwise, return all the Run accessions associated with whatever identifier was passed.
         return run_list, metadata_agg
 
-def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdump=False, zip_func="gzip"):
+def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdump=False, custom_args="", zip_func="gzip"):
     """
     Helper function to run fast(er)q-dump to grab a particular `acc`ession,
     with support for a particular number of `retries`. Can use multiple
@@ -147,15 +151,21 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
                 skip = True
                 break
         if not skip:
-            if fastqdump: # use legacy fastq-dump
-                print("downloading " + acc + " using fastq-dump")
-                cmd = ["fastq-dump", "--gzip", "--split-3", "--skip-technical"]
+            if len(custom_args) == 0:
+                if fastqdump: # use legacy fastq-dump
+                    cmd = ["fastq-dump", "--gzip", "--split-3", "--skip-technical"]
+                else:
+                    cmd = ["fasterq-dump", "-e", str(threads), "-f", "-3"]
             else:
-                print("downloading " + acc + " using fasterq-dump")
-                cmd = ["fasterq-dump", "-e", str(threads), "-f", "-3"]
+                suffix = "er"
+                if fastqdump:
+                    suffix = ""
+                prog_to_run = "fast" + suffix + "q-dump"
+                cmd = [prog_to_run] + custom_args.split(' ')
             if loc != "":
                 cmd = cmd + ['-O', loc]
             cmd = cmd + [acc]
+            print("running: "+" ".join(cmd))
             retcode = call(cmd)
             rgzip = 0
             if retcode == 0:
@@ -163,7 +173,6 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
                     # zip all possible output files for that acc
                     fnames = build_paths(acc, loc, False) + build_paths(acc, loc, True)
                     rgzip = gzip_files(fnames, zip_func, threads)
-
                 if rgzip == 0:
                     if check_existing(loc, acc) != False:
                         break

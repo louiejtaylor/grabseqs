@@ -15,7 +15,7 @@ def main():
     # Set up parsers
     parser = argparse.ArgumentParser(prog="grabseqs",
          description='Download metagenomic sequences from public datasets.')
-    parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.6.1')
+    parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.7.0')
     subpa = parser.add_subparsers(help='repositories available')
 
     add_sra_subparser(subpa)
@@ -23,7 +23,6 @@ def main():
     add_mgrast_subparser(subpa)
 
     args = parser.parse_args()
-
     # Make output directories if they don't exist
     try:
         if args.outdir != "":

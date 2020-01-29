@@ -52,6 +52,9 @@ If you'd like to do a dry run and only get a list of samples that will be downlo
     
     grabseqs sra -l SRP########
 
+If you'd like to pass your own arguments to `fasterq-dump` to get data in a slightly different format, you can do so like this:
+
+    grabseqs sra SRP####### -r 0 --custom_fqdump_args="--split-spot"
 
 Full usage:
 
@@ -75,6 +78,8 @@ Full usage:
       -l                list (but do not download) samples to be grabbed
       --parse_run_ids   parse SRR/ERR identifers (do not pass straight to fasterq-
                         dump)
+      --custom_fqdump_args CUSTOM_FQD_ARGS
+                        "string" containing args to pass to fastq-dump
       --use_fastq_dump  use legacy fastq-dump instead of fasterq-dump (no
                         multithreaded downloading)
       
@@ -110,7 +115,8 @@ If you use conda, these will be installed for you!
 ## Changelog
 
 **Dev version (not yet released)**
-
+ - Allow users to pass custom args to fast(er)q-dump
+ - Minor re-writes of download handling for easier code readability
 
 **0.6.1** (2019-12-20)
  - Validate compressed files (fix #8 and #34)
