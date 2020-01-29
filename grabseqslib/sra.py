@@ -169,10 +169,9 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
             retcode = call(cmd)
             rgzip = 0
             if retcode == 0:
-                if not fastqdump:
-                    # zip all possible output files for that acc
-                    fnames = build_paths(acc, loc, False) + build_paths(acc, loc, True)
-                    rgzip = gzip_files(fnames, zip_func, threads)
+                # zip all possible output files for that acc
+                fnames = build_paths(acc, loc, False) + build_paths(acc, loc, True)
+                rgzip = gzip_files(fnames, zip_func, threads)
 
                 if rgzip == 0:
                     if check_existing(loc, acc) != False:
