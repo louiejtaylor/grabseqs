@@ -54,7 +54,7 @@ If you'd like to do a dry run and only get a list of samples that will be downlo
 
 If you'd like to pass your own arguments to `fasterq-dump` to get data in a slightly different format, you can do so like this:
 
-    grabseqs sra SRP####### -r 0 --custom
+    grabseqs sra SRP####### -r 0 --custom_fqdump_args="--split-spot"
 
 Full usage:
 
