@@ -157,7 +157,10 @@ def run_fasterq_dump(acc, retries = 2, threads = 1, loc='', force=False, fastqdu
                 else:
                     cmd = ["fasterq-dump", "-e", str(threads), "-f", "-3"]
             else:
-                prog_to_run = "fast" + "er"*(not fastqdump) + "q-dump"
+                suffix = "er"
+                if fastqdump:
+                    suffix = ""
+                prog_to_run = "fast" + suffix + "q-dump"
                 cmd = [prog_to_run] + custom_args.split(' ')
             if loc != "":
                 cmd = cmd + ['-O', loc]
