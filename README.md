@@ -103,12 +103,19 @@ See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/
 
 ## Dependencies
   
-   - Python 3 (argparse, requests, subprocess, pandas)
+   - Python 3 (external packages req'd: requests, requests-html, pandas, fake-useragent)
    - sra-tools>2.9
    - pigz
    - wget
 
 If you use conda, these will be installed for you! Grabseqs should run on any modern Linux distro.
+
+Grabseqs has been tested and works with the following version of the Python dependencies (though these are neither minimal nor pinned version numbers):
+   
+   - requests 2.22.0
+   - requests-html 0.10.0
+   - pandas 0.25.3
+   - fake-useragent 0.1.11
 
 ------------
 
