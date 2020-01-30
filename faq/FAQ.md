@@ -6,6 +6,10 @@ Sections: [General](#general-faqs) | [SRA](#sra-faqs) | [MG-RAST](#mg-rast-faqs)
 
 ## General FAQs
 
+ - **I can't install on Python version 3.X through conda**
+
+Installation and release through conda explicitly uses Python versions 3.5, 3.6, 3.7, and 3.8 (as of Jan 2020). If you're using a different version of Python 3, try installing the grabseqs [requirements](https://github.com/louiejtaylor/grabseqs/blob/master/environment.yml) only via conda, then installing the grabseqs package through pip (`pip install grabseqs`) since the PyPI package is not built for a specific Python 3 minor version.
+
  - **The reads aren't downloading, why?**
 
 Many possibilites here, and often they are respository-dependent. General tips: 
