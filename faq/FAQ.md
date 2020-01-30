@@ -43,9 +43,14 @@ We use arguments that remove technical reads, return gzipped fastq files (when a
     fasterq-dump -e {thread_num} -f -3 SRR#########
     # or
     fastq-dump --gzip --split-3 --skip-technical SRR#########
-    # both of these can have "-O /path/to/outdir/" optionally appended before the accession if specified by the user
+    # both of these can have "-O /path/to/outdir/" optionally 
+    # appended before the accession if specified by the user
 
 For the current version of the code, see the `run_fasterq_dump` function within the [sra.py module](https://github.com/louiejtaylor/grabseqs/blob/master/grabseqslib/sra.py).
+
+If you'd like to pass your own arguments to either of these functions, use the `--custom_fqdump_args` parameter like so:
+
+    grabseqs sra SRP####### -r 0 --custom_fqdump_args="--split-spot --include-technical --progress"
 
  - **Why am I running out of space?**
  
