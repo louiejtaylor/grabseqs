@@ -36,14 +36,24 @@ We would appreciate you referencing our GitHub page if you find this tool useful
 
 ## SRA FAQs
 
- - **My reads are not paired properly.**
+ - **What default arguments do you use for calling fasterq/fastq-dump?**
 
-Sometimes fasterq-dump filters out reads but won't also filter the mate, and I haven't figured out why, or how to circumvent it. Try adding the `--use_fastq_dump` flag--this has fixed the problem every time I've encountered it.
+We use arguments that remove technical reads, return gzipped fastq files (when available), and split paired reads into separate files (with a third file for reads without a mate). Specifically, the commands look like:
 
+    fasterq-dump -e {thread_num} -f -3 SRR#########
+    # or
+    fastq-dump --gzip --split-3 --skip-technical SRR#########
+    # both of these can have "-O /path/to/outdir/" optionally appended before the accession if specified by the user
+
+For the current version of the code, see the `run_fasterq_dump` function within the [sra.py module](https://github.com/louiejtaylor/grabseqs/blob/master/grabseqslib/sra.py).
 
  - **Why am I running out of space?**
  
  If you're going to be using SRA data, after you've installed sra-tools, run `vdb-config -i` and turn off local file caching unless you want extra copies of the downloaded sequences taking up space ([read more here](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration)).
+
+ - **My reads are not paired properly.**
+
+Sometimes fasterq-dump filters out reads but won't also filter the mate, and I haven't figured out why, or how to circumvent it. Try adding the `--use_fastq_dump` flag--it seems that fastq-dump handles this situation better.
 
 [Top](#grabseqs-faq)
 
