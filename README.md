@@ -108,7 +108,7 @@ See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/
    - pigz
    - wget
 
-If you use conda (on Linux), these will be installed for you! Grabseqs should run on any modern Linux distro.
+If you use conda (on Linux), these will be installed for you!
 
 Grabseqs runs on Mac or Linux. We've tested on these specific OSes:
 
