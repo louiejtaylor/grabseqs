@@ -102,13 +102,25 @@ And iMicrobe:
 See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/FAQ.md) for detailed troubleshooting tips. If the FAQs don't fix your problem, feel free to [open an issue](https://github.com/louiejtaylor/grabseqs/issues)!
 
 ## Dependencies
-  
+
    - Python 3 (external packages req'd: requests, requests-html, pandas, fake-useragent)
    - sra-tools>2.9
    - pigz
    - wget
 
-If you use conda, these will be installed for you! Grabseqs should run on any modern Linux distro.
+If you use conda (on Linux), these will be installed for you! Grabseqs should run on any modern Linux distro.
+
+Grabseqs runs on Mac or Linux. We've tested on these specific OSes:
+
+Linux (conda or pip):
+  - CentOS 6, 7, and 8
+  - Debian 9 and 10
+  - Ubuntu 16.04, 18.04, and 19.10
+  - Red Hat Enterprise 6, 7, and 8
+  - SUSE Enterprise 12 and 15
+
+Mac (pip):
+  - MacOS 10.14
 
 Grabseqs has been tested and works with the following version of the Python dependencies (though these are neither minimal nor pinned version numbers):
    
