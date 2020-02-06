@@ -70,10 +70,10 @@ one-by-one.
 
 The `add_newrepo_subparser` function is likely mostly done for you in the template. There are a number of 
 options that you'll likely use for any repository (e.g. specifying an output directory, number of retries,
-forcing re-download of already-existing files, multithreading, and listing [rather than downloading] samples
-matching a particular query). These options are pre-specified for you and shouldn't be tweaked much for 
-consistency with other repository subparsers. If metadata is not programmatically available from `newrepo`,
-remove the `-m` option.
+forcing re-download of already-existing files, multithreading, and listing/dry-running \[rather than 
+downloading\] samples matching a particular query). These options are pre-specified for you and shouldn't
+be tweaked much for consistency with other repository subparsers. If metadata is not programmatically 
+available from `newrepo`, remove the `-m` option.
 
 If you'd like to include additional functions above and beyond these default options, you may add them to 
 the argparser object within this function. See the `sra.py` file for examples of other options--there are
@@ -82,3 +82,169 @@ a variety of options for the `grabseqs sra` subparser above and beyond the defau
 You may have noticed that this function isn't quite hooked up to the main argparse instance yet. That's okay;
 we'll do this at the end when we edit `__init__.py`.
 
+### Step 3: Add the controller logic
+
+From here on out, it's a good idea to have a good handle on the questions addressed in the "Repository 
+structure" section above. Important questions include:
+
+ - How can I programmatically access data, metadata, and map project accession numbers to sample accession 
+ numbers? E.g. is there an API endpoint (used in MG-RAST, iMicrobe metadata/downloads/mapping and 
+ SRA metadata/mapping) or a tool to aid in downloading (used in SRA downloads)?
+ - Is metadata available? If so, is sample-level metadata accessible from a project accession number
+ (easiest)?
+ 
+The answers to these questions determine how the `process_newrepo` controller function will be structured.
+The example in `template.py` assumes that metadata is available, and that sample-level metadata is present
+in the project-sample mapping step. Thus, the controller generally functions like so:
+
+    # begin looping through accession numbers passed by user
+    for newrepo_identifier in args.newrepoid:
+        
+        # for each project identifier, map it to sample identifiers and grab metadata (a pandas dataframe)
+        sample_list, metadata_agg = map_newrepo_project_acc(newrepo_identifier, metadata_agg)
+        
+        # for each sample mapped to by the passed project identifier
+        for sample in sample_list:
+            
+            # download that sample
+            download_newrepo_sample(acc,
+                                    args.retries,
+                                    args.threads,
+                                    args.outdir,
+                                    args.force,
+                                    args.list)
+ 
+Actual metadata saving is handled in a repository-agnostic fashion--the `process_newrepo` function will
+return the pandas dataframe containing metadata, which will then be saved in a safe/non-clobber-y way
+(with no additional effort necessary on your part).
+ 
+Now, let's go write the actual mapping logic.
+ 
+### Step 4: Map project accessions to sample accessions
+
+The `map_newrepo_project_acc` maps project to sample accession numbers, returning a list of sample accession
+numbers. Depending on metadata availability, you may also access sample metadata in this mapping step, and
+it seems prudent to only make one API call when necessary, so we've written the example using this slightly
+more complicated workflow--this is also used in the SRA and MG-RAST modules.
+
+Generally, you can pass one or more project or sample accessions to grabseqs. Depending on from where metadata is 
+obtained, you'll either want to avoid `map_newrepo_project_acc` altogether if a sample accession number is
+passed; or grab metadata and return a singleton list (containing the sample accession number) and metadata to your
+controller function. An example of using the pandas.DataFrame.append() method to concatenate multiple metadata
+tables is included in this function in the template file.
+
+The code here is dependent on the format of the project-sample map. SRA provides mapping information in csv format;
+the MG-RAST API returns JSON maps--feel free to use that code for inspiration. Your workflow might look something like
+this (based on the MG-RAST JSON workflow and using the `json` and `requests` libraries), where `pacc` is the 
+accession number:
+
+    # initialize vars
+    sample_list = []
+    metadata_df = pd.DataFrame()
+    
+    # hit api
+    metadata_json = json.loads(requests.get("http://api.newrepo.gov/metadata/export/"+str(pacc)).text)
+    
+    for sample in metadata_json["samples"]:
+        sample_list.append(sample["value"])
+        # additional logic to add metadata lines to metadata_df
+
+If the user would like to list \[but not download\] the available samples (-l) and information on read paired-ness
+is available here, i.e. from a metadata table, this can be tested for here (and then return an empty 
+`sample_list` to prevent downstream downloading). For an example of this workflow, see the `sra.py` module.
+
+### Step 5: Download samples!
+
+A bit of of boilerplate is included already, handling the `-f` (force) option:
+
+    # Make sure to check that the sample isn't already downloaded
+    if not force:
+        # using check_existing from utils.py
+        found = check_existing(loc, acc)
+        if found != False:
+            print("found existing file matching acc:" + acc + ", skipping download. Pass -f to force download")
+            return False
+
+You can build the expected paths for the eventual downloaded reads like so:
+
+    paired = True
+    # using build_paths from utils.py
+    file_paths = build_paths(acc, loc, paired)
+
+Generally, unless there's a tool like NCBI's fasterq-dump that downloads both reads in one command, it's 
+just easier to iterate through file paths (i.e. either one unpaired, or two paired). 
+
+If the file is directly available from an API URL, the `fetch_file` function from `grabseqs.utils` should serve 
+you well (it uses `wget`, a grabseqs dependency):
+
+    seq_urls = ["http://api.newrepo.gov/data/"+str(acc)+"_R1.fastq",
+                "http://api.newrepo.gov/data/"+str(acc)+"_R2.fastq"]
+    
+    for i in range(len(seq_urls)):
+    
+        print("Downloading accession "+acc+" from newrepo")
+        
+        # fetch_file should work for most things where a URL is available
+        retcode = fetch_file(seq_urls[i],file_paths[i],retries)
+
+        # There are a number of things you may want to do here: check and handle
+        # downloaded file integrity, convert to .fastq (see mgrast.py for an example
+        # of a scenario dealing with .fastx in general), etc.
+
+        print("Compressing .fastq")
+        gzip_files(file_paths, zip_func, threads)
+
+If metadata is only available on a sample-wise basis, you may want to do metadata handling in this function
+as well, or in a separate function if two API calls are necessary. See `mgrast.py` for an example of metadata
+handling at the sample level. If 
+
+Regarding sample listing/dry-running (-l)--if the information about whether samples are paired or unpaired is 
+only available from a sample-specific source, it usually makes more sense to look that up here, and then just 
+skip the downloading part. For an example of this workflow, see the `mgrast.py` module.
+
+Now we've written all the logic for argument parsing, metadata wrangling, project-sample accession mapping, and
+raw data downloading! We just have to hook it all together to the main grabseqs program.
+
+### Step 6: Hooking up subparser and controller functions
+
+Here, you need to edit `__init__.py`. This should be fairly self explanatory based on what's already 
+present for the other submodules, but you'll need to add the following:
+
+ - Import your new functions:
+```{python}
+from grabseqslib.sra import process_sra, add_sra_subparser
+from grabseqslib.imicrobe import process_imicrobe, add_imicrobe_subparser
+from grabseqslib.mgrast import process_mgrast, add_mgrast_subparser
+from grabseqslib.newrepo import process_newrepo, add_newrepo_subparser
+```
+ - Add your new subparser:
+```{python}
+add_sra_subparser(subpa)
+add_imicrobe_subparser(subpa)
+add_mgrast_subparser(subpa)
+add_mgrast_subparser(subpa)
+```
+ - Check to see if the user called your subparser:
+```{python}
+try:
+    if args.newrepoid:
+        repo = "newrepo"
+```
+ - Finally, add a case for your controller function:
+```{python}
+if repo == "SRA":
+    metadata_agg = process_sra(args, zip_func)
+elif repo == "MG-RAST":
+    metadata_agg = process_mgrast(args, zip_func)
+elif repo == "iMicrobe":
+    metadata_agg = process_imicrobe(args, zip_func)
+elif repo == "newrepo":
+    metadata_agg = process_newrepo(args, zip_func)
+```
+
+## What next?
+
+So, you've added a new repository--that's awesome (and thank you!!)! Feel free to open a pull request. We 
+run grabseqs through a rigorous set of automated tests on every commit/weekly, so please write a new test 
+or three testing data/metadata downloading, or any edge cases that you encounter that other users/developers
+might not know about.
