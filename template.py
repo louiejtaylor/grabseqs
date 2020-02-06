@@ -33,7 +33,7 @@ def add_newrepo_subparser(subparser):
 
     ### Add any repository-specific arguments here
 
-def process_newrepo_args(args):
+def process_newrepo(args):
     """
     Controller function for parsing newrepo repository data/metadata downloading.
     """
