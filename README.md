@@ -40,7 +40,7 @@ And iMicrobe (prefixing the sample numbers with "s" and project numbers with "p"
 
 ## Detailed usage
 
-See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/FAQ.md) for detailed troubleshooting tips!
+See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/faq.md) for detailed troubleshooting tips!
 
 Fun options:
 
@@ -99,7 +99,7 @@ And iMicrobe:
 
 ## Troubleshooting
 
-See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/FAQ.md) for detailed troubleshooting tips. If the FAQs don't fix your problem, feel free to [open an issue](https://github.com/louiejtaylor/grabseqs/issues)!
+See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/faq.md) for detailed troubleshooting tips. If the FAQs don't fix your problem, feel free to [open an issue](https://github.com/louiejtaylor/grabseqs/issues)!
 
 ## Dependencies
 
