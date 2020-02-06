@@ -2,6 +2,7 @@
 
 import requests, argparse, sys, os, time, json, glob
 from subprocess import call
+import pandas as pd
 
 from grabseqslib.utils import check_existing, fetch_file
 
@@ -44,7 +45,7 @@ def process_newrepo(args):
 
     # loop through passed identifiers
     for newrepo_identifier in args.newrepoid:
-        sample_list, metadata_agg = get_newrepo_acc_metadata(newrepo_identifier, metadata_agg)
+        sample_list, metadata_agg = map_newrepo_project_acc(newrepo_identifier, metadata_agg)
         for sample in sample_list:
             download_newrepo_sample(acc,
                                 args.retries,
@@ -58,28 +59,33 @@ def process_newrepo(args):
     # in the same step (as this is the most common configuration we've encountered).
     return metadata_agg
 
-def map_newrepo_project_acc(pacc, save = False, loc = ''):
+def map_newrepo_project_acc(pacc, metadata_agg = None):
     """
     Function to get list of newrepo sample accession numbers from a particular 
-    project. Takes project accession number `pacc` and returns a list of newrepo
-    accession numbers. Optional arguments to `save` metadata .csv in a specified
-    `loc`ation.
+    project. Takes project accession number `pacc` and an optional `metadata_agg`
+    pandas dataframe and returns a list of newrepo accession numbers with any new
+    metadata appended to `metadata_agg`.
     """
 
     sample_list = []
     # Search for project or sample information and metadata (if available)
-
-    if save:
-        # Save metadata in `loc`
-
+    
     # LISTING OPTION 1: If user would like to list the available samples (-l) and
     # this information is available, i.e. from a metadata table, this can
     # be tested for here (and then return an empty list to prevent downstream
     # processing). For an example of this, see the sra.py module
-
+    
+    
+    # This is example code from sra.py showing how one might append all metadata from 
+    # one run into the same dataframe
+    if type(metadata_agg) == type(None):
+        metadata_agg = pd.read_csv(StringIO(metadata.text))
+    else:
+        metadata_agg = metadata_agg.append(pd.read_csv(StringIO(metadata.text)),sort=True)
+        
     return sample_list, metadata
 
-def download_newrepo_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False):
+def download_newrepo_sample(acc, retries = 0, threads = 1, loc='', force=False, list_only=False, zip_func = "gzip"):
     """
     Helper function to download sequences given an newrepo `acc`ession,
     with support for a particular number of `retries`. Can use multiple
@@ -117,6 +123,6 @@ def download_newrepo_sample(acc, retries = 0, threads = 1, loc='', force=False, 
         # of a scenario dealing with .fastx in general), retries, etc.
 
         print("Compressing .fastq")
-        rzip = call(["pigz -f -p "+ str(threads) + ' ' + file_paths[i]], shell=True)
+        gzip_files(file_paths, zip_func, threads)
 
     return True
