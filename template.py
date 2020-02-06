@@ -11,8 +11,8 @@ def add_newrepo_subparser(subparser):
     """
 
     ### Base args: should be in every
-    parser_newrepo = subparser.add_parser('XYZ', help="download from XYZ")
-    parser_newrepo.add_argument('XYZid', type=str, nargs='+', 
+    parser_newrepo = subparser.add_parser('newrepo', help="download from newrepo")
+    parser_newrepo.add_argument('newrepoid', type=str, nargs='+', 
                 help="One or more newrepo project or sample identifiers (EXAMPLE####)")
 
     parser_newrepo.add_argument('-o', dest="outdir", type=str, default="",
@@ -43,8 +43,8 @@ def process_newrepo_args(args):
     metadata_agg = None
 
     # loop through passed identifiers
-    for newrepo_identifier in args.XYZid:
-        sample_list, metadata_agg = get_newrepo_acc_metadata(XYZ_identifier, metadata_agg)
+    for newrepo_identifier in args.newrepoid:
+        sample_list, metadata_agg = get_newrepo_acc_metadata(newrepo_identifier, metadata_agg)
         for sample in sample_list:
             download_newrepo_sample(acc,
                                 args.retries,
