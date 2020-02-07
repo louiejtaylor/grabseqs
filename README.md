@@ -134,7 +134,7 @@ Grabseqs has been tested and works with the following version of the Python depe
 ## Changelog
 
 **Dev version (not yet released)**
- - coming soon!
+ - Added a walk-through for adding a new repo using `template.py`
 
 **0.7.0** (2020-01-29)
  - Allow users to pass custom args to fast(er)q-dump
