@@ -28,7 +28,7 @@ This relationship is often reflected in the accession numbers for samples/projec
 exploited in automating sample access--for example, MG-RAST project IDs are prefixed by "mgp", 
 whereas sample (metagenome) names are prefixed by "mgm".
 
-Repository metadata is also an important point to consider. Is there programmatically-acessible
+Repository metadata is also an important point to consider. Is there programmatically-accessible
 metadata? If so, is it available on the project-level, sample-level, or both? For example, when
 accessing data from NCBI's SRA, you can request detailed, sample-level metadata from the API
 given only a project accession number, which greatly simplifies metadata processing. For MG-RAST
