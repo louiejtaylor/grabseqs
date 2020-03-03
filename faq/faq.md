@@ -6,6 +6,12 @@ Sections: [General](#general-faqs) | [SRA](#sra-faqs) | [MG-RAST](#mg-rast-faqs)
 
 ## General FAQs
 
+ - **What if I have a file containing a list of many accessions I want to download, and don't want to type them all on the command-line?**
+
+Let's say you have a newline-separated list of SRA accession numbers in a file called `acc.txt`. You can pass those through to grabseqs like so:
+ 
+     grabseqs sra $(cat acc.txt)
+
  - **I can't install on Python version 3.X through conda**
 
 Installation and release through conda explicitly uses Python versions 3.6 and 3.7 (as of Jan 2020). If you're using a different version of Python 3, try installing the grabseqs [requirements](https://github.com/louiejtaylor/grabseqs/blob/master/environment.yml) only via conda, then installing the grabseqs package through pip (`pip install grabseqs`) since the PyPI package is not built for a specific Python 3 minor version.
