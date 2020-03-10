@@ -2,7 +2,7 @@
 
 Utility for simplifying bulk downloading data from next-generation sequencing repositories, like [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra/), [MG-RAST](http://www.mg-rast.org/), and [iMicrobe](https://www.imicrobe.us/).
 
-[![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=shield)](https://circleci.com/gh/louiejtaylor/grabseqs) [![Conda version](https://anaconda.org/louiejtaylor/grabseqs/badges/version.svg)](https://anaconda.org/louiejtaylor/grabseqs) [![Conda downloads](https://anaconda.org/louiejtaylor/grabseqs/badges/downloads.svg)](https://anaconda.org/louiejtaylor/grabseqs/files)
+[![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=shield)](https://circleci.com/gh/louiejtaylor/grabseqs) [![Conda version](https://anaconda.org/louiejtaylor/grabseqs/badges/version.svg)](https://anaconda.org/louiejtaylor/grabseqs) [![Conda downloads](https://anaconda.org/louiejtaylor/grabseqs/badges/downloads.svg)](https://anaconda.org/louiejtaylor/grabseqs/files) [![Paper link](https://img.shields.io/badge/Published%20in-Bioinformatics-126888.svg)](https://doi.org/10.1093/bioinformatics/btaa167)
 
 ## Install
 
@@ -128,6 +128,14 @@ Grabseqs has been tested and works with the following version of the Python depe
    - requests-html 0.10.0
    - pandas 0.25.3
    - fake-useragent 0.1.11
+
+## Citation
+
+If you use grabseqs in your work, please cite:
+
+Louis J Taylor, Arwa Abbas, Frederic D Bushman. "grabseqs: Simple downloading of reads and metadata from multiple next-generation sequencing data repositories." *Bioinformatics*, (2020), btaa167, https://doi.org/10.1093/bioinformatics/btaa167
+
+Please also cite the researchers who generated the data (and the repository, if appropriate)!
 
 ------------
 
