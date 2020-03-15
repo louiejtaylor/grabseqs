@@ -78,3 +78,9 @@ function test_sra_custom_fastqdump_args {
     ls $TMPDIR/test_fastqdump_custom/SRR1913936.fastq.gz
 }
 
+# test case for invalid/empty accessions--should raise error (#51)
+function test_sra_invalid_acc {
+    if grabseqs sra -l PRJNAXXXXXXXX; then
+        exit 1
+    fi
+}
