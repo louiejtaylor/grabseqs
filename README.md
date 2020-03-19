@@ -145,6 +145,7 @@ Please also cite the researchers who generated the data (and the repository, if 
 
 **Dev version (not yet released)**
  - Added a walk-through for adding a new repo using `template.py`
+ - Better handling for invalid SRA accession numbers
 
 **0.7.0** (2020-01-29)
  - Allow users to pass custom args to fast(er)q-dump
