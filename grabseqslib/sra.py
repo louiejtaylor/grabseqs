@@ -95,8 +95,8 @@ def get_sra_acc_metadata(pacc, loc = '', list_only = False, no_SRR_parsing = Tru
     lines = [l.split(',') for l in metadata.text.split("\n")]
     try:
         run_col = lines[0].index("Run")
-    except IndexError: # "Run" column always present unless search failed
-        raise IndexError("Could not find samples for accession: "+pacc+". If this accession number is valid, try re-running.")
+    except ValueError: # "Run" column always present unless search failed
+        raise ValueError("Could not find samples for accession: "+pacc+". If this accession number is valid, try re-running.")
 
     # Generate list of runs to download
     run_list = [l[run_col] for l in lines[1:] if len(l[run_col]) > 0]
