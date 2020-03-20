@@ -21,8 +21,8 @@ function test_mgrast_fastq {
 
 ## download a tiny sample, .fasta-formatted
 function test_mgrast_fasta {
-    grabseqs mgrast -o $TMPDIR/test_tiny_mg_fasta mgm4633450.3
-    ls $TMPDIR/test_tiny_mg_fasta/mgm4633450.3.fastq.gz
+    grabseqs mgrast -o $TMPDIR/test_tiny_mg_fasta mgm4440055.3
+    ls $TMPDIR/test_tiny_mg_fasta/mgm4440055.3.fastq.gz
 }
 
 ## test no clobber

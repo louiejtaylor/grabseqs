@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - run: bash .circleci/setup.sh
-      - run: bash tests/run_tests.bash -i -m -d $HOME
+      - run: bash tests/run_tests.bash -i -d $HOME
 
 workflows:
   version: 2
