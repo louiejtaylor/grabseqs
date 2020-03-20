@@ -54,3 +54,10 @@ function test_imicrobe_fasta_force {
     fi
     ls $TMPDIR/test_tiny_im/s710.fastq.gz
 }
+
+# test case for invalid/empty accessions--should raise error (#51)
+function test_imicrobe_invalid_acc {
+    if grabseqs mgrast -l p4fake; then
+        exit 1
+    fi
+}

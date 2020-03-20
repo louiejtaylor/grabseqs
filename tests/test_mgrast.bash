@@ -44,3 +44,9 @@ function test_mgrast_fastq_force_download {
     ls $TMPDIR/test_tiny_mg/mgm4793571.3.fastq.gz
 }
 
+# test case for invalid/empty accessions--should raise error (#51)
+function test_mgrast_invalid_acc {
+    if grabseqs mgrast -l mgp0fake; then
+        exit 1
+    fi
+}

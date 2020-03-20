@@ -4,6 +4,8 @@ Utility for simplifying bulk downloading data from next-generation sequencing re
 
 [![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=shield)](https://circleci.com/gh/louiejtaylor/grabseqs) [![Conda version](https://anaconda.org/louiejtaylor/grabseqs/badges/version.svg)](https://anaconda.org/louiejtaylor/grabseqs) [![Conda downloads](https://anaconda.org/louiejtaylor/grabseqs/badges/downloads.svg)](https://anaconda.org/louiejtaylor/grabseqs/files) [![Paper link](https://img.shields.io/badge/Published%20in-Bioinformatics-126888.svg)](https://doi.org/10.1093/bioinformatics/btaa167)
 
+**Note: read downloads from MG-RAST are not working through their web interface or API currently (3/19/2020)**
+
 ## Install
 
 Install grabseqs and all dependencies [via conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html):
@@ -143,6 +145,7 @@ Please also cite the researchers who generated the data (and the repository, if 
 
 **Dev version (not yet released)**
  - Added a walk-through for adding a new repo using `template.py`
+ - Better handling for invalid SRA accession numbers
 
 **0.7.0** (2020-01-29)
  - Allow users to pass custom args to fast(er)q-dump
