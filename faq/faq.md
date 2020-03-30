@@ -76,7 +76,7 @@ Sometimes fasterq-dump filters out reads but won't also filter the mate, and I h
 
  - **My accession can't be found by grabseqs.**
 
-Many of the projects in MG-RAST are not publically accessible. If you're having trouble with a particular accession number or project, go to the [MG-RAST website](http://www.mg-rast.org/) and make sure you can download it by hand first. If this works fine, please [open an issue](https://github.com/louiejtaylor/grabseqs/issues) and we'll check it out!
+Many of the projects in MG-RAST are not publically accessible. If you're having trouble with a particular accession number or project, go to the [MG-RAST website](http://www.mg-rast.org/) and make sure you can download it by hand first. **Please do this first, as a number of samples which were previously available for download are now unavailable.** If this works fine, please [open an issue](https://github.com/louiejtaylor/grabseqs/issues) and we'll check it out!
 
 [Top](#grabseqs-faq)
 
