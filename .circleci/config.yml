@@ -9,7 +9,6 @@ jobs:
     docker:
       - image: cimg/python:3.7-browsers
     steps:
-      - browser-tools/install-browser-tools
       - checkout
       - run: bash .circleci/setup.sh
       - run: bash tests/run_tests.bash -i -v -d $HOME
