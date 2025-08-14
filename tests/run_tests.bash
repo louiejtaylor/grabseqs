@@ -172,6 +172,7 @@ capture_output setup
 source tests/test_general.bash
 
 if [ "$SKIP_IMICROBE" = false ]; then
+    echo "iMicrobe temporarily removed"
     # source tests/test_imicrobe.bash
     # temp until imicrobe issues resolved
 fi
