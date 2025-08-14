@@ -85,7 +85,7 @@ function setup {
     # Fix CircleCI testing issue for iMicrobe
     if [ `echo $HOME | grep "/home/circleci" | wc -l` -eq 1 ]; then
         echo "Tests running on CircleCI, adding add'l dependency"
-        pip install -U "urllib3<1.25"
+        pip install -U "urllib3"
     fi
 }
 
