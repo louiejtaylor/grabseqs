@@ -91,7 +91,8 @@ def get_sra_acc_metadata(pacc, loc = '', list_only = False, no_SRR_parsing = Tru
     """
     # Grab metadata for given accession number    
     pacc = pacc.strip()
-    metadata = requests.get("http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&db=sra&rettype=runinfo&term="+pacc)    
+     metadata = requests.get("https://trace.ncbi.nlm.nih.gov/Traces/sra-db-be/sra-db-be.cgi?rettype=runinfo&term="+pacc)
+    #metadata = requests.get("http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?save=efetch&db=sra&rettype=runinfo&term="+pacc)    
     lines = [l.split(',') for l in metadata.text.split("\n")]
     try:
         run_col = lines[0].index("Run")
