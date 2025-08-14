@@ -1,10 +1,10 @@
 # grabseqs
 
-Utility for simplifying bulk downloading data from next-generation sequencing repositories, like [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra/), [MG-RAST](http://www.mg-rast.org/), and [iMicrobe](https://www.imicrobe.us/).
+Utility for simplifying bulk downloading data from next-generation sequencing repositories, like [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra/), [MG-RAST](http://www.mg-rast.org/).
 
 [![CircleCI](https://circleci.com/gh/louiejtaylor/grabseqs.svg?style=shield)](https://circleci.com/gh/louiejtaylor/grabseqs) [![Conda version](https://anaconda.org/louiejtaylor/grabseqs/badges/version.svg)](https://anaconda.org/louiejtaylor/grabseqs) [![Conda downloads](https://anaconda.org/louiejtaylor/grabseqs/badges/downloads.svg)](https://anaconda.org/louiejtaylor/grabseqs/files) [![Paper link](https://img.shields.io/badge/Published%20in-Bioinformatics-126888.svg)](https://doi.org/10.1093/bioinformatics/btaa167)
 
-**Note: read downloads for some samples from MG-RAST are not working through their web interface or API currently (3/20/2020)**
+[iMicrobe](https://www.imicrobe.us/) is currently not supported--working to remedy this (2025/08/14)
 
 ## Install
 
@@ -35,10 +35,6 @@ If you'd like to do a dry run and just get a list of samples that will be downlo
 Similar syntax works for MG-RAST:
 
     grabseqs mgrast mgp##### mgm#######
-
-And iMicrobe (prefixing the sample numbers with "s" and project numbers with "p"):
-
-    grabseqs imicrobe p4 s3
 
 ## Detailed usage
 
@@ -93,12 +89,6 @@ Similar options are available for downloading from MG-RAST:
                     [-t THREADS] [-f] [-l]
                     rastid [rastid ...]
 
-And iMicrobe:
-
-    grabseqs imicrobe [-h] [-m METADATA] [-o OUTDIR] [-r RETRIES]
-                      [-t THREADS] [-f] [-l]
-                      imicrobeid [imicrobeid ...]
-
 ## Troubleshooting
 
 See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/faq.md) for detailed troubleshooting tips. If the FAQs don't fix your problem, feel free to [open an issue](https://github.com/louiejtaylor/grabseqs/issues)!
@@ -127,7 +117,6 @@ Mac (pip):
 Grabseqs has been tested and works with the following version of the Python dependencies (though these are neither minimal nor pinned version numbers):
    
    - requests 2.22.0
-   - requests-html 0.10.0
    - pandas 0.25.3
    - fake-useragent 0.1.11
 

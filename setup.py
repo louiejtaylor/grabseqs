@@ -14,7 +14,6 @@ setup(name='grabseqs',
 	]},
 	install_requires=[
 		'requests',
-		'requests-html',
 		'argparse',
 		'pandas'
 	],
@@ -24,5 +23,5 @@ setup(name='grabseqs',
 				'License :: OSI Approved :: MIT License',
 				'Programming Language :: Python :: 3',
 				'Topic :: Scientific/Engineering :: Bio-Informatics',],
-	py_modules = ['utils','sra','mgrast','imicrobe']
+	py_modules = ['utils','sra','mgrast']
 )

@@ -1,6 +1,5 @@
 import os, glob, gzip, sys
 from subprocess import call
-from requests_html import HTMLSession
 
 def check_existing(save_loc, acc):
     """

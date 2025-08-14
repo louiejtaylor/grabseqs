@@ -4,7 +4,7 @@ channels:
   - louiejtaylor
 dependencies:
   - sra-tools>2.9
-  - python=3.7
+  - python
   - requests
   - pigz
   - wget

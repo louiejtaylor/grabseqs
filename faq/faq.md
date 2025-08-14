@@ -82,6 +82,8 @@ Many of the projects in MG-RAST are not publically accessible. If you're having 
 
 ## iMicrobe FAQs
 
+2025-08-14: currently non-functional
+
  - **My iMicrobe download isn't working.**
 
 As with MG-RAST, many of the iMicrobe projects are not available to the public. If you're having download troubles, see whether you can download a test sample manually from [the iMicrobe website](https://www.imicrobe.us/). iMicrobe seems to have reads stored a lot of different ways. For iMicrobe, we handle reads that are either in .fastq or .fasta (adding dummy scores in .fastq conversion), either .gzipped or not, and either paired or unpaired. If you come across reads that are in another format, or you can download from the website but not through grabseqs, please [open an issue](https://github.com/louiejtaylor/grabseqs/issues) and we'll take a look.

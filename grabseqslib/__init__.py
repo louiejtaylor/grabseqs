@@ -1,11 +1,10 @@
-__all__ = ["utils","sra","mgrast","imicrobe"]
+__all__ = ["utils","sra","mgrast"]
 
 import os, sys, argparse, warnings, shutil
 import pandas as pd
 
 from pathlib import Path
 from grabseqslib.sra import process_sra, add_sra_subparser
-from grabseqslib.imicrobe import process_imicrobe, add_imicrobe_subparser
 from grabseqslib.mgrast import process_mgrast, add_mgrast_subparser
 
 def main():
@@ -19,7 +18,6 @@ def main():
     subpa = parser.add_subparsers(help='repositories available')
 
     add_sra_subparser(subpa)
-    add_imicrobe_subparser(subpa)
     add_mgrast_subparser(subpa)
 
     args = parser.parse_args()
@@ -38,11 +36,7 @@ def main():
         if args.rastid:
             repo = "MG-RAST"
     except AttributeError:
-        try:
-            if args.imicrobeid:
-                repo = "iMicrobe"
-        except AttributeError:
-            repo = "SRA"
+        repo = "SRA"
 
     # Check deps
     zip_func = "gzip"
@@ -59,9 +53,6 @@ def main():
 
     elif repo == "MG-RAST":
         metadata_agg = process_mgrast(args, zip_func)
-
-    elif repo == "iMicrobe":
-        metadata_agg = process_imicrobe(args, zip_func)
 
     # Handle metadata
     if args.metadata != "":
