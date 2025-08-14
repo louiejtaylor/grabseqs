@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - louiejtaylor
 dependencies:
-  - sra-tools>2.9
+  - sra-tools>3.2
   - python
   - requests
   - pigz
