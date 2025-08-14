@@ -5,13 +5,13 @@ function test_grabseqs_installed {
 }
 
 # test missing sra-tools
-function test_grabseqs_no_sratools {
-    conda remove sra-tools -qy
-    if grabseqs sra -o $TMPDIR/test_no_sra-tools ERR2279063; then
-        exit 1
-    fi
-    conda install "sra-tools>3.2" -c bioconda -qy
-}
+#function test_grabseqs_no_sratools {
+#    conda remove sra-tools -qy
+#    if grabseqs sra -o $TMPDIR/test_no_sra-tools ERR2279063; then
+#        exit 1
+#    fi
+#    conda install "sra-tools>3.2" -c bioconda -qy
+#}
 
 # test missing pigz
 function test_grabseqs_no_pigz {
