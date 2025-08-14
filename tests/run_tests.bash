@@ -87,7 +87,6 @@ function setup {
         echo "Tests running on CircleCI, adding add'l dependency"
         pip uninstall -y "urllib3"
 	pip install "urllib3"
-	pip install "requests-html"
     fi
 }
 
