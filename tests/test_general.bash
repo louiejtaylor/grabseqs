@@ -10,7 +10,7 @@ function test_grabseqs_no_sratools {
     if grabseqs sra -o $TMPDIR/test_no_sra-tools ERR2279063; then
         exit 1
     fi
-    conda install sra-tools>3.2 -c bioconda -qy
+    conda install "sra-tools>3.2" -c bioconda -qy
 }
 
 # test missing pigz
