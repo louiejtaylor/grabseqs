@@ -2,7 +2,7 @@ import setuptools
 from distutils.core import setup
 
 setup(name='grabseqs',
-	version='0.7.0',
+	version='1.0.0',
 	description='Easily download reads from next-gen sequencing repositories like NCBI SRA',
 	author='Louis J Taylor',
 	author_email='l'+'ouist'+'@'+'u'+'penn.edu',
@@ -15,7 +15,7 @@ setup(name='grabseqs',
 	install_requires=[
 		'requests',
 		'argparse',
-		'pandas'
+		'pandas>=2'
 	],
 	classifiers = ['Intended Audience :: Science/Research',
 				'Environment :: Console',

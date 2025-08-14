@@ -1,5 +1,5 @@
 {% set name = "grabseqs" %}
-{% set version = "0.7.0" %}
+{% set version = "1.0.0" %}
 
 package:
   name: "{{ name|lower }}"
@@ -19,12 +19,10 @@ requirements:
     - pandas
     - python {{ python }}
     - requests
-    - requests_html
   run:
     - pandas
     - python
     - requests
-    - requests_html
     - sra-tools
     - pigz
     - wget

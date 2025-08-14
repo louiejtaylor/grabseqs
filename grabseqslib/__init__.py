@@ -14,7 +14,7 @@ def main():
     # Set up parsers
     parser = argparse.ArgumentParser(prog="grabseqs",
          description='Download metagenomic sequences from public datasets.')
-    parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.7.0')
+    parser.add_argument('--version', '-v', action='version', version='%(prog)s 1.0.0')
     subpa = parser.add_subparsers(help='repositories available')
 
     add_sra_subparser(subpa)

@@ -96,7 +96,7 @@ See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/
 ## Dependencies
 
    - Python 3 (external packages req'd: requests, requests-html, pandas, fake-useragent)
-   - sra-tools>2.9
+   - sra-tools>3.2
    - pigz
    - wget
 
@@ -117,8 +117,7 @@ Mac (pip):
 Grabseqs has been tested and works with the following version of the Python dependencies (though these are neither minimal nor pinned version numbers):
    
    - requests 2.22.0
-   - pandas 0.25.3
-   - fake-useragent 0.1.11
+   - pandas>2
 
 ## Citation
 
@@ -132,9 +131,11 @@ Please also cite the researchers who generated the data (and the repository, if 
 
 ## Changelog
 
-**Dev version (not yet released)**
+**1.0.0** (2025-08-14)
  - Added a walk-through for adding a new repo using `template.py`
  - Better handling for invalid SRA accession numbers
+ - Update endpoint for NCBI for SRA downloads
+ - Temporarily remove iMicrobe--needs rewrite to use a different tool
 
 **0.7.0** (2020-01-29)
  - Allow users to pass custom args to fast(er)q-dump
