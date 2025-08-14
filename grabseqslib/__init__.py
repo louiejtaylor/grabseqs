@@ -62,6 +62,6 @@ def main():
             print("Metadata saved to new file: " + str(md_path))
         else:
             metadata_i = pd.read_csv(md_path)
-            metadata_f = metadata_i.concat(metadata_agg,sort=True)
+            metadata_f = pd.concat([metadata_i,metadata_agg],sort=True)
             metadata_f.to_csv(md_path, index = False)
             print("Metadata appended to existing file: " + str(md_path))

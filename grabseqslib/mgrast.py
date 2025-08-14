@@ -95,7 +95,7 @@ def download_mgrast_sample(acc, retries = 0, threads = 1, loc='', force=False, l
         if type(metadata_agg) == type(None):
             metadata_agg = pd.read_csv(StringIO(formatted_table))
         else:
-            metadata_agg = metadata_agg.concat(pd.read_csv(StringIO(formatted_table)),sort=True)
+            metadata_agg = pd.concat([metadata_agg,pd.read_csv(StringIO(formatted_table))],sort=True)
     if list_only:
         print(','.join([acc+ext+".fastq.gz" for ext in fext]))
     else:
