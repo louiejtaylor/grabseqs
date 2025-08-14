@@ -77,6 +77,8 @@ function setup {
     verbose "Setting up conda environment..."
     conda env update --name=grabseqs-unittest --file environment.yml
     conda activate grabseqs-unittest
+    # required for installing libs
+    pip install setuptools
     verbose "Installing grabseqs library"
     python setup.py install
 
