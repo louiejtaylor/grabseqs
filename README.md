@@ -38,7 +38,7 @@ Similar syntax works for MG-RAST:
 
 ## Detailed usage
 
-See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/faq.md) for detailed troubleshooting tips!
+See the [grabseqs FAQ](https://github.com/louiejtaylor/grabseqs/blob/master/faq/faq.md) for detailed troubleshooting tips.
 
 Fun options:
 
